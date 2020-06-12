@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<creaturescripts>
+	<event type="moveitem" name="MoveItem" event="script" value="houseprotect.lua"/>
+	<event type="extendedopcode" name="ExtendedOpcode" event="script" value="extendedopcode.lua"/>
+</creaturescripts>

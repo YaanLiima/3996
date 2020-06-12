@@ -1,3 +1,4 @@
+- TFS 0.4 8.60
 1. Source: https://www.xtibia.com/forum/topic/249977-860-tfs-04-rev3996-war-cast/
    OR: https://tibiaking.com/forums/topic/96040-860-tfs-04-rev3996-war-cast/
 

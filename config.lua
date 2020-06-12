@@ -113,7 +113,7 @@
 	premiumPlayerSkipWaitList = false
 	max_packets_per_second = 1000
 
-    -- Anti-Divulgação
+    -- Anti-DivulgaÃ§Ã£o
 	advertisingBlock = ".net;servegame;no-ip;.hopto;.net;.info;.org;.zapto;.me;.ddns;.pl;.biz"
 	
 	-- Database
@@ -257,7 +257,6 @@
 	-- Limits
 	idleWarningTime = 14 * 60 * 1000
 	idleKickTime = 15 * 60 * 1000
-	playerQueryDeepness = 2
 	tileLimit = 0
 	protectionTileLimit = 0
 	houseTileLimit = 0

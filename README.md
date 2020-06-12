@@ -11,10 +11,3 @@
 	* chmod -R 996 src
 	* cd src
 	* ./autogen.sh && ./configure --enable-sqlite --enable-mysql --enable-root-permission --enable-server-diag && ./build.sh
-	
-5. ERROR lua.hpp...? RUN:
-	* apt-get install lua50 liblua50 liblua50-dev
-	* wget http://www.lua.org/ftp/lua-5.1.4.tar.gz
-	* tar -xzvf lua-5.1.4.tar.gz
-	* cd lua*
-	* make linux && make install

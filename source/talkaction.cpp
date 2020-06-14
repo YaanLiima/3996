@@ -822,7 +822,7 @@ bool TalkAction::guildJoin(Creature* creature, const std::string&, const std::st
 			if(player->isGuildInvited(guildId))
 			{
                 char buffer[80];
-				uint32_t count = g_config.getNumber(ConfigManager::GUILD_MAXPLAYER);
+				uint32_t count = g_config.getNumber(ConfigManager::GUILD_MAXPLAYER); //included by Yan Liima
 				if(IOGuild::getInstance()->getGuildMaxMembersCount(guildId) < count) {
 				IOGuild::getInstance()->joinGuild(player, guildId);
 				player->sendTextMessage(MSG_INFO_DESCR, "You have joined the guild.");

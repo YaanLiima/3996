@@ -12,7 +12,7 @@
 4. MSVC10 libs and includes: https://www.mediafire.com/file/giu6pe2kitum5rq/vc10_pack.rar/file
 
 5. Compile on linux:
-	* apt-get install autogen autoconf automake build-essential cmake g++ cpp gcc subversion lib32ncurses5-dev libreadline-dev libboost-dev libboost-thread-dev libboost-regex-dev libboost-date-time-dev libboost-filesystem-dev libxml2-dev libssl-dev libmysql++-dev libtool pkg-config libxml++-dev zlib1g-dev libcrypto++-dev libmysqlclient-dev
+	* apt-get install autogen autoconf build-essential pkg-config automake cmake g++ cpp gcc subversion lib32ncurses5-dev libreadline-dev libboost-dev libboost-thread-dev libboost-regex-dev libboost-date-time-dev libboost-filesystem-dev libgmp3-dev libxml2-dev liblua5.1-0-dev libssl-dev libmysql++-dev libtool libxml++-dev zlib1g-dev libcrypto++-dev libmysqlclient-dev
 	* cd /3996-master
 	* chmod -R 996 src
 	* cd src

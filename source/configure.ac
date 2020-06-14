@@ -199,7 +199,7 @@ AC_CHECK_HEADERS([cryptopp/sha.h cryptopp/md5.h cryptopp/adler32.h cryptopp/hex.
 AC_CHECK_LIB(cryptopp, main, , [AC_MSG_ERROR("Linking against Crypto++ library failed")])
 
 # check for OpenSSL
-AC_CHECK_HEADERS([openssl/rsa.h openssl/bn.h openssl/err.h], , [AC_MSG_ERROR("Required OpenSSL headers not found.")])
+AC_CHECK_HEADERS([openssl/rsa.h openssl/bn.h openssl/err.h openssl/sha.h openssl/md5.h], , [AC_MSG_ERROR("Required OpenSSL headers not found.")])
 AC_CHECK_LIB(crypto, main, , [AC_MSG_ERROR("Linking against OpenSSL library failed")])
 
 

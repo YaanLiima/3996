@@ -1,7 +1,7 @@
 [Project]
 FileName=TheForgottenServer.dev
 Name=TheForgottenServer
-UnitCount=157
+UnitCount=159
 Type=1
 Ver=1
 ObjFiles=
@@ -41,7 +41,7 @@ FileVersion=0.4
 FileDescription=The Forgotten Server
 InternalName=
 LegalCopyright=Editado por Yan Liima - Night
-LegalTrademarks=www.facebook.com/dbuoriginal
+LegalTrademarks=www.facebook.com/yan.santoslima.7
 OriginalFilename=The Forgotten Server.exe
 ProductName=The Forgotten Server
 ProductVersion=0.4
@@ -1588,9 +1588,9 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit159]
-FileName=..\weapons.h
+FileName=..\rsa.h
 CompileCpp=1
-Folder=TheForgottenServer
+Folder=Dbo Universe Online Brasil
 Compile=1
 Link=1
 Priority=1000
@@ -1699,6 +1699,16 @@ BuildCmd=
 
 [Unit99]
 FileName=..\exception.h
+CompileCpp=1
+Folder=TheForgottenServer
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit158]
+FileName=..\rsa.cpp
 CompileCpp=1
 Folder=TheForgottenServer
 Compile=1

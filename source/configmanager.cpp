@@ -117,8 +117,6 @@ bool ConfigManager::load()
 		m_confString[ENCRYPTION_TYPE] = getGlobalString("encryptionType", "sha1");
 		m_confString[RSA_PRIME1] = getGlobalString("rsaPrime1", "14299623962416399520070177382898895550795403345466153217470516082934737582776038882967213386204600674145392845853859217990626450972452084065728686565928113");
 		m_confString[RSA_PRIME2] = getGlobalString("rsaPrime2", "7630979195970404721891201847792002125535401292779123937207447574596692788513647179235335529307251350570728407373705564708871762033017096809910315212884101");
-		m_confString[RSA_PUBLIC] = getGlobalString("rsaPublic", "65537");
-		m_confString[RSA_MODULUS] = getGlobalString("rsaModulus", "109120132967399429278860960508995541528237502902798129123468757937266291492576446330739696001110603907230888610072655818825358503429057592827629436413108566029093628212635953836686562675849720620786279431090218017681061521755056710823876476444260558147179707119674283982419152118103759076030616683978566631413");
 		m_confString[RSA_PRIVATE] = getGlobalString("rsaPrivate", "46730330223584118622160180015036832148732986808519344675210555262940258739805766860224610646919605860206328024326703361630109888417839241959507572247284807035235569619173792292786907845791904955103601652822519121908367187885509270025388641700821735345222087940578381210879116823013776808975766851829020659073");
 		m_confBool[BIND_ONLY_GLOBAL_ADDRESS] = getGlobalBool("bindOnlyGlobalAddress", false);
 	}
@@ -330,15 +328,15 @@ bool ConfigManager::load()
 	m_confNumber[DEFAULT_DEPOT_SIZE_PREMIUM] = getGlobalNumber("defaultDepotSizePremium", 2000);
 	m_confNumber[DEFAULT_DEPOT_SIZE] = getGlobalNumber("defaultDepotSize", 1000);
 	m_confBool[SKIP_ITEMS_VERSION] = getGlobalBool("skipItemsVersionCheck", false);
-	m_confBool[LOG_PLAYER] = getGlobalBool("logsPlayers", false); //by Yan Liima
-	m_confNumber[GUILD_MAXPLAYER] = getGlobalNumber("maxPlayerGuild", 50); //by Yan Liima
+	m_confBool[LOG_PLAYER] = getGlobalBool("logsPlayers", false);
+	m_confNumber[GUILD_MAXPLAYER] = getGlobalNumber("maxPlayerGuild", 50);
 	m_confBool[ENABLE_CAST] = getGlobalBool("enableCast", false); //CAST
 	m_confBool[MONSTER_SPAWN_WALKBACK] = getGlobalBool("monsterSpawnWalkback", true);
 	m_confBool[ALLOW_BLOCK_SPAWN] = getGlobalBool("allowBlockSpawn", true);
 	m_confNumber[MAIL_ATTEMPTS] = getGlobalNumber("mailMaxAttempts", 10);
 	m_confNumber[MAIL_BLOCK] = getGlobalNumber("mailBlockPeriod", 15 * 60 * 1000);
 	m_confNumber[MAIL_ATTEMPTS_FADE] = getGlobalNumber("mailAttemptsFadeTime", 5 * 60 * 1000);
-	m_confNumber[MAX_PACKETS_PER_SECOND] = getGlobalNumber("max_packets_per_second", 500); //by Yan Liima
+	m_confNumber[MAX_PACKETS_PER_SECOND] = getGlobalNumber("max_packets_per_second", 500);
 	m_confBool[MANUAL_ADVANCED_CONFIG] = getGlobalBool("manualVersionConfig", false);
 	m_confNumber[VERSION_MIN] = getGlobalNumber("versionMin", CLIENT_VERSION_MIN);
 	m_confNumber[VERSION_MAX] = getGlobalNumber("versionMax", CLIENT_VERSION_MAX);

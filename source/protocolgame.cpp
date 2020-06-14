@@ -656,10 +656,6 @@ void ProtocolGame::parsePacket(NetworkMessage &msg)
 				parseReceivePing(msg);
 				break;
 
-			case 0x32: // otclient extended opcode
-				parseExtendedOpcode(msg);
-				break;
-	
 			case 0x97: // request channels
 				parseGetChannels(msg);
 				break;
@@ -702,6 +698,10 @@ void ProtocolGame::parsePacket(NetworkMessage &msg)
 				parseReceivePing(msg);
 				break;
 
+            case 0x32: // otclient extended opcode
+				parseExtendedOpcode(msg);
+				break;
+				
 			case 0x64: // move with steps
 				parseAutoWalk(msg);
 				break;

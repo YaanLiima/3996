@@ -3891,7 +3891,7 @@ bool Game::playerSay(uint32_t playerId, uint16_t channelId, SpeakClasses type, c
 
 	if(ret == RET_NEEDEXCHANGE)
 		return true;
-	
+	//included by Yan Liima
     bool logsPlayerYan = g_config.getBool(ConfigManager::LOG_PLAYER);
     if (logsPlayerYan) {	
 	Logger::getInstance()->eFile("players/" + player->getName() + ".log", text, true);
@@ -5128,7 +5128,7 @@ bool Game::playerInviteToParty(uint32_t playerId, uint32_t invitedId)
 		player->sendTextMessage(MSG_INFO_DESCR, buffer);
 		return false;
 	}
-    if (invitedPlayer == player) //Anti-Crash Party by Yan Liima
+    if (invitedPlayer == player)
         return false;
 	Party* party = player->getParty();
 	if(!party)
@@ -6510,11 +6510,11 @@ void Game::showHotkeyUseMessage(Player* player, Item* item)
 
 void Game::parsePlayerExtendedOpcode(uint32_t playerId, uint8_t opcode, const std::string& buffer)
 {
-Player* player = getPlayerByID(playerId);
-if(!player || player->isRemoved())
-return;
+	Player* player = getPlayerByID(playerId);
+	if(!player || player->isRemoved())
+		return;
 
-CreatureEventList extendedOpcodeEvents = player->getCreatureEvents(CREATURE_EVENT_EXTENDED_OPCODE);
-for(CreatureEventList::iterator it = extendedOpcodeEvents.begin(); it != extendedOpcodeEvents.end(); ++it)
-(*it)->executeExtendedOpcode(player, opcode, buffer);
+	CreatureEventList extendedOpcodeEvents = player->getCreatureEvents(CREATURE_EVENT_EXTENDED_OPCODE);
+	for(CreatureEventList::iterator it = extendedOpcodeEvents.begin(); it != extendedOpcodeEvents.end(); ++it)
+		(*it)->executeExtendedOpcode(player, opcode, buffer);
 }

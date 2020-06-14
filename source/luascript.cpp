@@ -11190,17 +11190,19 @@ SHIFT_OPERATOR(uint32_t, URightShift, >>)
 #undef SHIFT_OPERATOR
 int32_t LuaInterface::luaDoSendPlayerExtendedOpcode(lua_State* L)
 {
-//doSendPlayerExtendedOpcode(cid, opcode, buffer) by Yan Liima (Night)
-std::string buffer = popString(L);
-int opcode = popNumber(L);
+	//doPlayerSendExtendedOpcode(cid, opcode, buffer)
+	std::string buffer = popString(L);
+	int32_t opcode = popNumber(L);
 
-ScriptEnviroment* env = getEnv();
-if(Player* player = env->getPlayerByUID(popNumber(L))) {
-player->sendExtendedOpcode(opcode, buffer);
-lua_pushboolean(L, true);
-}
-lua_pushboolean(L, false);
-return 1;
+	ScriptEnviroment* env = getEnv();
+	if(Player* player = env->getPlayerByUID(popNumber(L)))
+	{
+		player->sendExtendedOpcode(opcode, buffer);
+		lua_pushboolean(L, true);
+	}
+
+	lua_pushboolean(L, false);
+	return 1;
 }
 
 int32_t LuaInterface::luaDoPlayerSendPing(lua_State* L)

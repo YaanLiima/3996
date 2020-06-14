@@ -30,10 +30,6 @@
 #endif
 #include <boost/config.hpp>
 
-#include <openssl/rsa.h>
-#include <openssl/bn.h>
-#include <openssl/err.h>
-
 #include "server.h"
 #ifdef __LOGIN_SERVER__
 #include "gameservers.h"
@@ -43,6 +39,7 @@
 #include "game.h"
 #include "chat.h"
 #include "tools.h"
+#include "rsa.h"
 
 #include "protocollogin.h"
 #include "protocolgame.h"
@@ -86,7 +83,7 @@ inline void boost::throw_exception(std::exception const & e)
 }
 #endif
 
-RSA* g_RSA;
+RSA g_RSA;
 ConfigManager g_config;
 Game g_game;
 Chat g_chat;
@@ -542,26 +539,12 @@ void otserv(StringVec, ServiceManager* services)
 		std::clog << "falhou - nao foi possivel analisar arquivo remoto (voce esta conectado em alguma rede?)" << std::endl; */
 
 	std::clog << ">> Carregando RSA key" << std::endl;
-	g_RSA = RSA_new();
-
-	BN_dec2bn(&g_RSA->p, g_config.getString(ConfigManager::RSA_PRIME1).c_str());
-	BN_dec2bn(&g_RSA->q, g_config.getString(ConfigManager::RSA_PRIME2).c_str());
-	BN_dec2bn(&g_RSA->d, g_config.getString(ConfigManager::RSA_PRIVATE).c_str());
-	BN_dec2bn(&g_RSA->n, g_config.getString(ConfigManager::RSA_MODULUS).c_str());
-	BN_dec2bn(&g_RSA->e, g_config.getString(ConfigManager::RSA_PUBLIC).c_str());
-	// TODO: dmp1, dmq1, iqmp?
-	
 	// This check will verify keys set in config.lua
-	if(!RSA_check_key(g_RSA))
-	{
-		std::stringstream s;
-		s << "OpenSSL falhou - ";
+	const char* p(g_config.getString(ConfigManager::RSA_PRIME1).c_str());
+	const char* q(g_config.getString(ConfigManager::RSA_PRIME2).c_str());
+	const char* d(g_config.getString(ConfigManager::RSA_PRIVATE).c_str());
 	
-		ERR_load_crypto_strings();
-		s << ERR_error_string(ERR_get_error(), NULL);
-		startupErrorMessage(s.str());
-	}
-	
+    g_RSA.initialize(p, q, d);
 	std::clog << ">> Iniciando conexao SQL" << std::endl;
 	Database* db = Database::getInstance();
 	if(db && db->isConnected())

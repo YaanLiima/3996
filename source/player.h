@@ -1036,7 +1036,7 @@ class Player : public Creature, public Cylinder
 
 		void setNextAction(int64_t time) {if(time > nextAction) {nextAction = time;}}
 		bool canDoAction() const {return nextAction <= OTSYS_TIME();}
-		uint32_t getNextActionTime() const;
+		uint32_t getNextActionTime(bool scheduler = true) const;
 		
 		void setNextExAction(int64_t time) {if(time > nextExAction) nextExAction = time;}
 		bool canDoExAction() const {return nextExAction <= OTSYS_TIME();}

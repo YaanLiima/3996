@@ -1215,7 +1215,7 @@ bool Game::playerMoveCreature(uint32_t playerId, uint32_t movingCreatureId,
 	else if(Player* movingPlayer = movingCreature->getPlayer())
 	{
 		uint64_t delay = OTSYS_TIME() + movingPlayer->getStepDuration();
-		if(delay > movingPlayer->getNextActionTime())
+		if(delay > movingPlayer->getNextActionTime(false))
 			movingPlayer->setNextAction(delay);
 	}
 

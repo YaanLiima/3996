@@ -262,14 +262,20 @@ bool TalkActions::onPlayerSay(Creature* creature, uint16_t channelId, const std:
             return talkAction->executeSay(creature, words, "", channelId);
         return false;
     }
-   else if(talkAction->getChannel() != -1 && talkAction->getChannel() != channelId)
+    else if(talkAction->getChannel() != -1 && talkAction->getChannel() != channelId)
 		return false;
 
 	Player* player = creature->getPlayer();
+	if(player)
+	{
+		if(!player->canDoExAction())
+			return false;
+		
 	StringVec exceptions = talkAction->getExceptions();
-	if(player && ((!ignoreAccess && std::find(exceptions.begin(), exceptions.end(), asLowerCaseString(
-		player->getName())) == exceptions.end() && talkAction->getAccess() > player->getAccess())
-		|| player->isAccountManager()))
+	if((!ignoreAccess && std::find(exceptions.begin(), exceptions.end(), asLowerCaseString(
+			player->getName())) == exceptions.end() && (talkAction->getAccess() > player->getAccess()
+			|| (talkAction->hasGroups() && !talkAction->hasGroup(player->getGroupId()))))
+			|| player->isAccountManager())
 	{
 		if(player->hasCustomFlag(PlayerCustomFlag_GamemasterPrivileges))
 		{
@@ -278,6 +284,10 @@ bool TalkActions::onPlayerSay(Creature* creature, uint16_t channelId, const std:
 		}
 
 		return false;
+	}
+
+		if(!player->hasCustomFlag(PlayerCustomFlag_GamemasterPrivileges))
+			player->setNextExAction(OTSYS_TIME() + g_config.getNumber(ConfigManager::CUSTOM_ACTIONS_DELAY_INTERVAL) - 10);
 	}
 
 	if(talkAction->isLogged())
@@ -320,6 +330,7 @@ Event(copy)
 	m_hidden = copy->m_hidden;
 	m_sensitive = copy->m_sensitive;
 	m_exceptions = copy->m_exceptions;
+	m_groups = copy->m_groups;
 }
 
 bool TalkAction::configureEvent(xmlNodePtr p)
@@ -349,6 +360,13 @@ bool TalkAction::configureEvent(xmlNodePtr p)
 	int32_t intValue;
 	if(readXMLInteger(p, "access", intValue))
 		m_access = intValue;
+
+	if(readXMLString(p, "group", strValue) || readXMLString(p, "groups", strValue))
+	{
+		m_groups.clear();
+		if(!parseIntegerVec(strValue, m_groups))
+			std::clog << "[Warning - TalkAction::configureEvent] Invalid group(s) for TalkAction: " << strValue << std::endl;
+	}
 
 	if(readXMLInteger(p, "channel", intValue))
 		m_channel = intValue;

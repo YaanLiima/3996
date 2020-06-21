@@ -113,8 +113,13 @@
 	premiumPlayerSkipWaitList = false
 	max_packets_per_second = 1000
 
-    -- Anti-DivulgaÃ§Ã£o
+    -- Anti-Divulgação
 	advertisingBlock = ".net;servegame;no-ip;.hopto;.net;.info;.org;.zapto;.me;.ddns;.pl;.biz"
+	
+	-- Anti-Push
+	useAntiPush = true
+	antiPushDelay = 500
+	antiPushItems = "2148,2152,2160,3976" 
 	
 	-- Database
 	-- NOTE: sqlFile is used only by sqlite database, and sqlKeepAlive by mysql database.
@@ -163,10 +168,12 @@
 	houseRentPeriod = "never"
 	houseCleanOld = 0
 	guildHalls = false
+	houseSkipInitialRent = true
 
 	-- Item usage
 	timeBetweenActions = 500
-	timeBetweenExActions = 1000
+	timeBetweenExActions = 500
+	timeBetweenCustomActions = 500
 	hotkeyAimbotEnabled = true
 
 	-- Exhausts
@@ -232,6 +239,7 @@
 	tradeLimit = 100
 	defaultDepotSize = 1000
 	defaultDepotSizePremium = 2000
+	classicEquipmentSlots = true
 
 	-- VIP list
 	separateVipListPerCharacter = false

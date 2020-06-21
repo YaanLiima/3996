@@ -168,6 +168,7 @@ bool ConfigManager::load()
 	m_confBool[AIMBOT_HOTKEY_ENABLED] = getGlobalBool("hotkeyAimbotEnabled", true);
 	m_confNumber[ACTIONS_DELAY_INTERVAL] = getGlobalNumber("timeBetweenActions", 200);
 	m_confNumber[EX_ACTIONS_DELAY_INTERVAL] = getGlobalNumber("timeBetweenExActions", 1000);
+	m_confNumber[CUSTOM_ACTIONS_DELAY_INTERVAL] = getGlobalNumber("timeBetweenCustomActions", 500);
 	m_confNumber[CRITICAL_HIT_CHANCE] = getGlobalNumber("criticalHitChance", 5);
 	m_confBool[REMOVE_WEAPON_AMMO] = getGlobalBool("removeWeaponAmmunition", true);
 	m_confBool[REMOVE_WEAPON_CHARGES] = getGlobalBool("removeWeaponCharges", true);
@@ -315,6 +316,9 @@ bool ConfigManager::load()
 	m_confString[ADMIN_ENCRYPTION] = getGlobalString("adminEncryption", "");
 	m_confString[ADMIN_ENCRYPTION_DATA] = getGlobalString("adminEncryptionData", "");
 	m_confBool[ADDONS_PREMIUM] = getGlobalBool("addonsOnlyPremium", true);
+	m_confBool[ANTI_PUSH] = getGlobalBool("useAntiPush", true);
+	m_confNumber[ANTI_PUSH_DELAY] = getGlobalNumber("antiPushDelay", 500);
+	m_confString[ANTI_PUSH_ITEMS] = getGlobalString("antiPushItems", "2148,2152,2160");
 	m_confString[ADVERTISING_BLOCK] = getGlobalString("advertisingBlock", "");
 	m_confNumber[ACCOUNT_SIZE] = getGlobalNumber("accountSize", 15);
 	m_confBool[UNIFIED_SPELLS] = getGlobalBool("unifiedSpells", true);
@@ -328,6 +332,7 @@ bool ConfigManager::load()
 	m_confNumber[DEFAULT_DEPOT_SIZE_PREMIUM] = getGlobalNumber("defaultDepotSizePremium", 2000);
 	m_confNumber[DEFAULT_DEPOT_SIZE] = getGlobalNumber("defaultDepotSize", 1000);
 	m_confBool[SKIP_ITEMS_VERSION] = getGlobalBool("skipItemsVersionCheck", false);
+	m_confBool[SILENT_LUA] = getGlobalBool("disableLuaErrors", false);
 	m_confBool[LOG_PLAYER] = getGlobalBool("logsPlayers", false);
 	m_confNumber[GUILD_MAXPLAYER] = getGlobalNumber("maxPlayerGuild", 50);
 	m_confBool[ENABLE_CAST] = getGlobalBool("enableCast", false); //CAST
@@ -336,11 +341,14 @@ bool ConfigManager::load()
 	m_confNumber[MAIL_ATTEMPTS] = getGlobalNumber("mailMaxAttempts", 10);
 	m_confNumber[MAIL_BLOCK] = getGlobalNumber("mailBlockPeriod", 15 * 60 * 1000);
 	m_confNumber[MAIL_ATTEMPTS_FADE] = getGlobalNumber("mailAttemptsFadeTime", 5 * 60 * 1000);
+	m_confBool[HOUSE_SKIP_INIT_RENT] = getGlobalBool("houseSkipInitialRent", true);
 	m_confNumber[MAX_PACKETS_PER_SECOND] = getGlobalNumber("max_packets_per_second", 500);
 	m_confBool[MANUAL_ADVANCED_CONFIG] = getGlobalBool("manualVersionConfig", false);
 	m_confNumber[VERSION_MIN] = getGlobalNumber("versionMin", CLIENT_VERSION_MIN);
 	m_confNumber[VERSION_MAX] = getGlobalNumber("versionMax", CLIENT_VERSION_MAX);
 	m_confString[VERSION_MSG] = getGlobalString("versionMsg", "Only clients with protocol " CLIENT_VERSION_STRING " allowed!");
+	m_confBool[USE_RUNE_REQUIREMENTS] = getGlobalBool("useRunesRequirements", true);
+	m_confBool[CLASSIC_EQUIPMENT_SLOTS] = getGlobalBool("classicEquipmentSlots", true);
 	m_confNumber[EXHAUST_ONBUY] = getGlobalNumber("onBuy", 500);
 	m_confNumber[EXHAUST_ONSELL] = getGlobalNumber("onSell", 500);
 	m_confNumber[EXHAUST_CHANGEOUFIT] = getGlobalNumber("changeOutfit", 500);

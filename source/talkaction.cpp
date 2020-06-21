@@ -134,7 +134,10 @@ bool TalkActions::registerEvent(Event* event, xmlNodePtr p, bool override)
 
 bool TalkActions::onPlayerSay(Creature* creature, uint16_t channelId, const std::string& words, bool ignoreAccess, ProtocolGame* pg) //CAST
 {
-	std::string cmd[TALKFILTER_LAST] = words, param[TALKFILTER_LAST] = "";
+	std::string cmd[TALKFILTER_LAST], param[TALKFILTER_LAST];
+	for(int32_t i = 0; i < TALKFILTER_LAST; ++i)
+		cmd[i] = words;
+	
 	std::string::size_type loc = words.find('"', 0);
 	if(loc != std::string::npos)
 	{
@@ -188,7 +191,7 @@ bool TalkActions::onPlayerSay(Creature* creature, uint16_t channelId, const std:
     
     if(pg != NULL && pg->getIsCast() && creature->getPlayer()) { //CAST
 		Player* p = creature->getPlayer();
-		if(pg != NULL && words[0] == '!' || words[0] == '/' && pg->getIsCast()) {
+		if((pg != NULL && words[0] == '!') || (words[0] == '/' && pg->getIsCast())) {
 				if(words.substr(1, 8) == "castnick") {
 						if(words.length() > 10)
 						{
@@ -271,7 +274,7 @@ bool TalkActions::onPlayerSay(Creature* creature, uint16_t channelId, const std:
 	{
 		if(player->hasCustomFlag(PlayerCustomFlag_GamemasterPrivileges))
 		{
-			player->sendTextMessage(MSG_STATUS_SMALL, "Você não pode executar esta talkaction.");
+			player->sendTextMessage(MSG_STATUS_SMALL, "You cannot execute this talkaction.");
 			return true;
 		}
 
@@ -573,6 +576,31 @@ bool TalkAction::houseBuy(Creature* creature, const std::string&, const std::str
 	}
 
 	house->setOwnerEx(player->getGUID(), true);
+	if(g_config.getBool(ConfigManager::HOUSE_SKIP_INIT_RENT))
+	{
+		uint32_t paidUntil = time(NULL);
+		switch(Houses::getInstance()->getRentPeriod())
+		{
+			case RENTPERIOD_DAILY:
+				paidUntil += 86400;
+				break;
+			case RENTPERIOD_WEEKLY:
+				paidUntil += 7 * 86400;
+				break;
+			case RENTPERIOD_MONTHLY:
+				paidUntil += 30 * 86400;
+				break;
+			case RENTPERIOD_YEARLY:
+				paidUntil += 365 * 86400;
+				break;
+			default:
+				break;
+		}
+
+		house->setPaidUntil(paidUntil);
+		house->setLastWarning(0);
+	}
+	
 	std::string ret = "You have successfully bought this ";
 	if(house->isGuild())
 		ret += "hall";

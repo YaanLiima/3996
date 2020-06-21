@@ -15,7 +15,7 @@
 #define FILE_DESCRIPTION	"The Forgotten Server"
 #define INTERNAL_NAME	""
 #define LEGAL_COPYRIGHT	"Editado por Yan Liima - Night"
-#define LEGAL_TRADEMARKS	"www.facebook.com/dbuoriginal"
+#define LEGAL_TRADEMARKS	"www.facebook.com/yan.santoslima.7"
 #define ORIGINAL_FILENAME	"The Forgotten Server.exe"
 #define PRODUCT_NAME	"The Forgotten Server"
 #define PRODUCT_VERSION	"0.4"

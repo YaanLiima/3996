@@ -809,6 +809,9 @@ std::string LuaInterface::getScript(int32_t scriptId)
 
 void LuaInterface::error(const char* function, const std::string& desc)
 {
+	if(g_config.getBool(ConfigManager::SILENT_LUA))
+		return;
+	
 	int32_t script, callback;
 	bool timer;
 	std::string event;

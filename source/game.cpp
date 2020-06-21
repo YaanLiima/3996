@@ -1492,16 +1492,20 @@ if(!success)
     return false;
     
 	/* Corrigido ElfBot Anti-Push (Anti-Crash) */
-	uint16_t items[] = {2148, 2152, 2160, 2599, 3976, 7634, 7635, 7636};
-	uint16_t n = 0;
-	for (n = 0; n < sizeof(items) / sizeof(uint16_t); n++){
-		if(item->getID() == items[n] && player->hasCondition(CONDITION_EXHAUST, 1)){
-			player->sendTextMessage(MSG_STATUS_SMALL, "Please wait a few seconds to move this item.");
-		return false;
-		}
-	}
-
-	if(Condition* condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_EXHAUST, 500, 0, false, 1))
+	if(g_config.getBool(ConfigManager::ANTI_PUSH)){ //included by Yan Liima
+	std::string antiPushItems = g_config.getString(ConfigManager::ANTI_PUSH_ITEMS);
+    IntegerVec tmpVec = vectorAtoi(explodeString(antiPushItems, ","));
+	if(tmpVec[0] != 0){
+    for(IntegerVec::iterator it = tmpVec.begin(); it != tmpVec.end(); ++it){
+        if(item->getID() == uint32_t(*it) && player->hasCondition(CONDITION_EXHAUST, 1)){
+            player->sendTextMessage(MSG_STATUS_SMALL, "Please wait a few seconds to move this item.");
+        return false;
+        }
+      }
+   }
+}
+    int32_t delay = g_config.getNumber(ConfigManager::ANTI_PUSH_DELAY); //by Yan Liima
+	if(Condition* condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_EXHAUST, delay, 0, false, 1))
 	player->addCondition(condition);
 	/* end */
    
@@ -1509,11 +1513,14 @@ if(!success)
 		return false;
 	
 	ReturnValue ret = internalMoveItem(player, fromCylinder, toCylinder, toIndex, item, count, NULL);
-	if(ret == RET_NOERROR)
-		return true;
+	if(ret != RET_NOERROR)
+	{
+		player->sendCancelMessage(ret);
+		return false;
+	}
 
-	player->sendCancelMessage(ret);
-	return false;
+	player->setNextAction(OTSYS_TIME() + g_config.getNumber(ConfigManager::ACTIONS_DELAY_INTERVAL) - 10);
+	return true;
 }
 
 ReturnValue Game::internalMoveItem(Creature* actor, Cylinder* fromCylinder, Cylinder* toCylinder,
@@ -3697,20 +3704,22 @@ bool Game::playerSetFightModes(uint32_t playerId, fightMode_t fightMode, chaseMo
 	player->setFightMode(fightMode);
 	player->setChaseMode(chaseMode);
 	player->setSecureMode(secureMode);
-
+	
+	player->setLastAttack(OTSYS_TIME());
 	return true;
 }
 
 bool Game::playerRequestAddVip(uint32_t playerId, const std::string& vipName)
 {
 	Player* player = getPlayerByID(playerId);
-	if(!player || player->isRemoved())
+	if(!player || player->isRemoved() || !player->canDoExAction())
 		return false;
 
 	uint32_t guid;
 	bool specialVip;
-
 	std::string name = vipName;
+	
+	player->setNextExAction(OTSYS_TIME() + g_config.getNumber(ConfigManager::CUSTOM_ACTIONS_DELAY_INTERVAL) - 10);
 	if(!IOLoginData::getInstance()->getGuidByNameEx(guid, specialVip, name))
 	{
 		player->sendTextMessage(MSG_STATUS_SMALL, "A player with that name does not exist.");
@@ -3723,9 +3732,18 @@ bool Game::playerRequestAddVip(uint32_t playerId, const std::string& vipName)
 		return false;
 	}
 
+    if(player->hasCondition(CONDITION_EXHAUST, 1))
+	{
+		player->sendTextMessage(MSG_STATUS_SMALL, "Please wait few seconds before adding new player to your vip list.");
+		return false;
+	}
+	
 	bool online = false;
 	if(Player* target = getPlayerByName(name))
 		online = player->canSeeCreature(target);
+
+	if(Condition* condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_EXHAUST, 3000, 0, false, 1))
+		player->addCondition(condition);
 
 	return player->addVIP(guid, name, online);
 }

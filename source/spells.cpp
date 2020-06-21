@@ -626,6 +626,8 @@ bool Spell::checkSpell(Player* player) const
 		return false;
 	}
 
+    if(g_config.getBool(ConfigManager::USE_RUNE_REQUIREMENTS))
+	{
 	if((int32_t)player->getLevel() < level)
 	{
 		player->sendCancelMessage(RET_NOTENOUGHLEVEL);
@@ -638,6 +640,7 @@ bool Spell::checkSpell(Player* player) const
 		player->sendCancelMessage(RET_NOTENOUGHMAGICLEVEL);
 		g_game.addMagicEffect(player->getPosition(), MAGIC_EFFECT_POFF);
 		return false;
+		}
 	}
 
 	if(player->getMana() < getManaCost(player) && !player->hasFlag(PlayerFlag_HasInfiniteMana))
@@ -1664,11 +1667,14 @@ bool RuneSpell::configureEvent(xmlNodePtr p)
 		hasCharges = booleanString(strValue);
 
 	ItemType& it = Item::items.getItemType(runeId);
+	if(g_config.getBool(ConfigManager::USE_RUNE_REQUIREMENTS))
+	{
 	if(level && level != it.runeLevel)
 		it.runeLevel = level;
 
 	if(magLevel && magLevel != it.runeMagLevel)
 		it.runeMagLevel = magLevel;
+	}
 
 	it.vocationString = parseVocationString(vocStringVec);
 	return true;

@@ -2679,7 +2679,12 @@ ReturnValue Player::__queryAdd(int32_t index, const Thing* thing, uint32_t count
 	else if(item->getSlotPosition() & SLOTP_TWO_HAND)
 		ret = RET_PUTTHISOBJECTINBOTHHANDS;
 	else if((item->getSlotPosition() & SLOTP_RIGHT) || (item->getSlotPosition() & SLOTP_LEFT))
-		ret = RET_PUTTHISOBJECTINYOURHAND;
+	{
+		if(!g_config.getBool(ConfigManager::CLASSIC_EQUIPMENT_SLOTS))
+			ret = RET_CANNOTBEDRESSED;
+		else
+			ret = RET_PUTTHISOBJECTINYOURHAND;
+	}
 
 	switch(index)
 	{
@@ -2702,8 +2707,26 @@ ReturnValue Player::__queryAdd(int32_t index, const Thing* thing, uint32_t count
 		case SLOT_RIGHT:
 			if(item->getSlotPosition() & SLOTP_RIGHT)
 			{
+				if(!g_config.getBool(ConfigManager::CLASSIC_EQUIPMENT_SLOTS))
+				{
+					if(!item->isWeapon() || (item->getWeaponType() != WEAPON_SHIELD && !item->isDualWield()))
+						ret = RET_CANNOTBEDRESSED;
+					else
+					{
+						const Item* leftItem = inventory[SLOT_LEFT];
+						if(leftItem)
+						{
+							if((leftItem->getSlotPosition() | item->getSlotPosition()) & SLOTP_TWO_HAND)
+								ret = RET_BOTHHANDSNEEDTOBEFREE;
+							else
+								ret = RET_NOERROR;
+						}
+						else
+							ret = RET_NOERROR;
+					}
+				}
 				//check if we already carry an item in the other hand
-				if(item->getSlotPosition() & SLOTP_TWO_HAND)
+				else if(item->getSlotPosition() & SLOTP_TWO_HAND)
 				{
 					if(inventory[SLOT_LEFT] && inventory[SLOT_LEFT] != item)
 						ret = RET_BOTHHANDSNEEDTOBEFREE;
@@ -2735,8 +2758,17 @@ ReturnValue Player::__queryAdd(int32_t index, const Thing* thing, uint32_t count
 		case SLOT_LEFT:
 			if(item->getSlotPosition() & SLOTP_LEFT)
 			{
+				if(!g_config.getBool(ConfigManager::CLASSIC_EQUIPMENT_SLOTS))
+				{
+					if(!item->isWeapon() || item->getWeaponType() == WEAPON_SHIELD)
+						ret = RET_CANNOTBEDRESSED;
+					else if(inventory[SLOT_RIGHT] && (item->getSlotPosition() & SLOTP_TWO_HAND))
+						ret = RET_BOTHHANDSNEEDTOBEFREE;
+					else
+						ret = RET_NOERROR;
+				}
 				//check if we already carry an item in the other hand
-				if(item->getSlotPosition() & SLOTP_TWO_HAND)
+				else if(item->getSlotPosition() & SLOTP_TWO_HAND)
 				{
 					if(inventory[SLOT_RIGHT] && inventory[SLOT_RIGHT] != item)
 						ret = RET_BOTHHANDSNEEDTOBEFREE;
@@ -2778,7 +2810,7 @@ ReturnValue Player::__queryAdd(int32_t index, const Thing* thing, uint32_t count
 				ret = RET_NOERROR;
 			break;
 		case SLOT_AMMO:
-			if(item->getSlotPosition() & SLOTP_AMMO)
+			if((item->getSlotPosition() & SLOTP_AMMO) || g_config.getBool(ConfigManager::CLASSIC_EQUIPMENT_SLOTS))
 				ret = RET_NOERROR;
 			break;
 		case SLOT_WHEREEVER:
@@ -2790,14 +2822,15 @@ ReturnValue Player::__queryAdd(int32_t index, const Thing* thing, uint32_t count
 			break;
 	}
 
+    Player* self = const_cast<Player*>(this);
 	if(ret == RET_NOERROR || ret == RET_NOTENOUGHROOM)
 	{
 		//need an exchange with source?
-		if(getInventoryItem((slots_t)index) != NULL && (!getInventoryItem((slots_t)index)->isStackable()
-			|| getInventoryItem((slots_t)index)->getID() != item->getID()))
+		Item* tmpItem = NULL;
+		if((tmpItem = getInventoryItem((slots_t)index)) && (!tmpItem->isStackable() || tmpItem->getID() != item->getID()))
 			return RET_NEEDEXCHANGE;
 
-		if(!g_moveEvents->onPlayerEquip(const_cast<Player*>(this), const_cast<Item*>(item), (slots_t)index, true))
+		if(!g_moveEvents->onPlayerEquip(self, const_cast<Item*>(item), (slots_t)index, true))
 			return RET_CANNOTBEDRESSED;
 
 		//check if enough capacity
@@ -2805,6 +2838,24 @@ ReturnValue Player::__queryAdd(int32_t index, const Thing* thing, uint32_t count
 			return RET_NOTENOUGHCAPACITY;
 	}
 
+    if(index == SLOT_LEFT || index == SLOT_RIGHT)
+	{
+		if(ret == RET_NOERROR && item->getWeaponType() != WEAPON_NONE)
+			self->setLastAttack(OTSYS_TIME());
+
+		Item* tmpItem = inventory[(slots_t)index];
+		if(ret == RET_NOTENOUGHROOM && g_game.internalAddItem(NULL, self, tmpItem, INDEX_WHEREEVER) == RET_NOERROR)
+		{
+			self->sendRemoveInventoryItem((slots_t)index, tmpItem);
+			self->onRemoveInventoryItem((slots_t)index, tmpItem);
+
+			self->inventory[(slots_t)index] = NULL;
+			self->updateWeapon();
+			self->inventoryWeight -= tmpItem->getWeight();
+			self->sendStats();
+		}
+	}
+	
 	return ret;
 }
 

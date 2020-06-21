@@ -89,6 +89,12 @@ class TalkAction : public Event
 		bool isLogged() const {return m_logged;}
 		bool isHidden() const {return m_hidden;}
 		bool isSensitive() const {return m_sensitive;}
+		
+		bool hasGroups() const {return !m_groups.empty();}
+		bool hasGroup(int32_t value) const {return std::find(m_groups.begin(), m_groups.end(), value) != m_groups.end();}
+		
+		IntegerVec::const_iterator getGroupsBegin() const {return m_groups.begin();}
+		IntegerVec::const_iterator getGroupsEnd() const {return m_groups.end();}
 
 	protected:
 		virtual std::string getScriptEventName() const {return "onSay";}
@@ -116,5 +122,6 @@ class TalkAction : public Event
 		int32_t m_channel;
 		bool m_logged, m_hidden, m_sensitive;
 		StringVec m_exceptions;
+		IntegerVec m_groups;
 };
 #endif

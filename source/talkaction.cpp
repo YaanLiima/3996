@@ -173,21 +173,6 @@ bool TalkActions::onPlayerSay(Creature* creature, uint16_t channelId, const std:
 
 	if(!talkAction && defaultTalkAction)
 		talkAction = defaultTalkAction;
-
-	 if(!talkAction)
-    {
-        for(TalkActionsMap::iterator it = talksMap.begin(); it != talksMap.end(); ++it)
-        {
-            if(it->first == "illegalWords")
-            {
-                talkAction = it->second;
-                break;
-            }
-        }
-        if(talkAction && talkAction->isScripted())
-            return talkAction->executeSay(creature, words, "", channelId);
-        return false;
-    }
     
     if(pg != NULL && pg->getIsCast() && creature->getPlayer()) { //CAST
 		Player* p = creature->getPlayer();
@@ -263,7 +248,21 @@ bool TalkActions::onPlayerSay(Creature* creature, uint16_t channelId, const std:
 		return false;
 	}
 	
-    if(!talkAction || (talkAction->getChannel() != -1 && talkAction->getChannel() != channelId))
+	if(!talkAction)
+    {
+        for(TalkActionsMap::iterator it = talksMap.begin(); it != talksMap.end(); ++it)
+        {
+            if(it->first == "illegalWords")
+            {
+                talkAction = it->second;
+                break;
+            }
+        }
+        if(talkAction && talkAction->isScripted())
+            return talkAction->executeSay(creature, words, "", channelId);
+        return false;
+    }
+   else if(talkAction->getChannel() != -1 && talkAction->getChannel() != channelId)
 		return false;
 
 	Player* player = creature->getPlayer();

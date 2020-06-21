@@ -143,6 +143,10 @@ AC_CHECK_FUNCS([ceil floor ftime gethostbyname gethostname memset pow sqrt strca
 AM_PATH_XML2(2.6.5, , AC_MSG_ERROR([You need libxml2 >= 2.6.5 to compile theforgottenserver!]))
 LIBS="$LIBS $XML_LIBS"
 
+# check for gmp
+AC_CHECK_HEADERS([gmp.h], ,[AC_MSG_ERROR("gmp header not found.")])
+AC_CHECK_LIB(gmp, __gmpz_init2, ,[AC_MSG_ERROR("Linking against gmp library failed.")])
+
 # check for zlib
 AC_CHECK_HEADERS([zlib.h], ,[AC_MSG_ERROR("zlib header not found.")])
 AC_CHECK_LIB(z, main, ,[AC_MSG_ERROR("Linking against zlib library failed.")])

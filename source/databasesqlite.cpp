@@ -266,3 +266,4 @@ SQLiteResult::SQLiteResult(sqlite3_stmt* stmt)
 	for(int32_t i = 0; i < fields; i++)
 		m_listNames[sqlite3_column_name(m_handle, i)] = i;
 }
+#endif

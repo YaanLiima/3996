@@ -14,8 +14,13 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ////////////////////////////////////////////////////////////////////////
+#ifdef __USE_MYSQL__
 #include "otpch.h"
+#ifdef _MSC_VER
+#include <errmsg.h>
+#else
 #include <mysql/errmsg.h>
+#endif
 #include <iostream>
 
 #include "database.h"
@@ -23,6 +28,7 @@
 
 #include "scheduler.h"
 #include "configmanager.h"
+#include "tools.h"
 
 extern ConfigManager g_config;
 
@@ -65,6 +71,7 @@ DatabaseMySQL::DatabaseMySQL() :
 		m_timeoutTask = Scheduler::getInstance().addEvent(createSchedulerTask(timeout,
 			boost::bind(&DatabaseMySQL::keepAlive, this)));
 
+    //if(asLowerCaseString(g_config.getString(ConfigManager::HOUSE_STORAGE)) == "relational")	
 	if(!g_config.getBool(ConfigManager::HOUSE_STORAGE))
 		return;
 
@@ -335,3 +342,4 @@ MySQLResult::MySQLResult(MYSQL_RES* result)
 	while((field = mysql_fetch_field(m_handle)))
 		m_listNames[field->name] = i++;
 }
+#endif

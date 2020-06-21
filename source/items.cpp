@@ -525,11 +525,13 @@ void Items::parseItemNode(xmlNodePtr itemNode, uint32_t id)
 	if(readXMLString(itemNode, "plural", strValue))
 		it.pluralName = strValue;
 
-	xmlNodePtr itemAttributesNode = itemNode->children;
-	while(itemAttributesNode)
+	for(xmlNodePtr itemAttributesNode = itemNode->children; itemAttributesNode; itemAttributesNode = itemAttributesNode->next)
 	{
-		if(readXMLString(itemAttributesNode, "key", strValue))
-		{
+		if(!readXMLString(itemAttributesNode, "key", strValue))
+			continue;
+#ifdef _MSC_VER
+			bool notLoaded = false;
+#endif
 			std::string tmpStrValue = asLowerCaseString(strValue);
 			if(tmpStrValue == "type")
 			{
@@ -1252,7 +1254,17 @@ void Items::parseItemNode(xmlNodePtr itemNode, uint32_t id)
 				if(readXMLInteger(itemAttributesNode, "value", intValue))
 					it.abilities.absorb[COMBAT_UNDEFINEDDAMAGE] += intValue;
 			}
+#ifndef _MSC_VER
 			else if(tmpStrValue == "reflectpercentall")
+#else
+			else
+				notLoaded = true;
+
+			if(!notLoaded)
+				continue;
+
+			if(tmpStrValue == "reflectpercentall")
+#endif
 			{
 				if(readXMLInteger(itemAttributesNode, "value", intValue))
 				{
@@ -1791,7 +1803,6 @@ void Items::parseItemNode(xmlNodePtr itemNode, uint32_t id)
 			}
 			else
 				std::clog << "[Warning - Items::loadFromXml] Unknown key value " << strValue << std::endl;
-		}
 
 		itemAttributesNode = itemAttributesNode->next;
 	}

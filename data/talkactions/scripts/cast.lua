@@ -1,4 +1,5 @@
 function onSay(cid, words, param, channel)
+if(getConfigValue("enableCast") ~= false) then --By Yan Liima
 	local tmp = string.explode(param, " ", 1)
 	if not(tmp[1]) then
 		return doPlayerSendCancel(cid, "Parameters needed")
@@ -140,4 +141,6 @@ function onSay(cid, words, param, channel)
 		doPlayerSetStorageValue(cid, 656544, os.time()+60)
 	end
 	return true
+end	
+	return false
 end

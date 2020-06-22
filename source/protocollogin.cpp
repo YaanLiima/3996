@@ -73,7 +73,14 @@ bool ProtocolLogin::parseFirstPacket(NetworkMessage& msg)
 	/*uint16_t operatingSystem = msg.get<uint16_t>();*/msg.skip(2);
 	uint16_t version = msg.get<uint16_t>();
 
+#ifdef CLIENT_VERSION_DATA
+	uint32_t datSignature = msg.get<uint32_t>();
+	uint32_t sprSignature = msg.get<uint32_t>();
+
+	uint32_t picSignature = msg.get<uint32_t>();
+#else
 	msg.skip(12);
+#endif
 	if(!RSA_decrypt(msg))
 	{
 		getConnection()->close();
@@ -271,7 +278,7 @@ bool ProtocolLogin::parseFirstPacket(NetworkMessage& msg)
 			output->put<uint32_t>(serverIp);
 			output->put<uint16_t>(g_config.getNumber(ConfigManager::GAME_PORT));
 			#else
-			if(version < it->second->getVersionMin() || version > it->second->getVersionMax())
+			if(version >= it->second->getVersionMin() && version <= it->second->getVersionMax())
 				continue;
 
 			output->putString(it->first);

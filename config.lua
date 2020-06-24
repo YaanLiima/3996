@@ -3,6 +3,7 @@
 	-- Account manager
 	accountManager = false
 	namelockManager = false
+	newPlayerChooseTown = false
 	newPlayerChooseVoc = true
 	newPlayerSpawnPosX = 302
 	newPlayerSpawnPosY = 48

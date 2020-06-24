@@ -1175,7 +1175,7 @@ class Player : public Creature, public Cylinder
 		int32_t soulMax;
 		int32_t vocationId;
 		int32_t groupId;
-		int32_t managerNumber, managerNumber2;
+		int32_t managerNumber, managerNumber2, managerNumber3;
 		int32_t purchaseCallback;
 		int32_t saleCallback;
 		int32_t varSkills[SKILL_LAST + 1];

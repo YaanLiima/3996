@@ -74,6 +74,7 @@ Player::Player(const std::string& _name, ProtocolGame* p):
 	conditionImmunities = conditionSuppressions = groupId = vocationId = managerNumber2 = town = skullEnd = 0;
 	lastLogin = lastLogout = lastIP = messageTicks = messageBuffer = nextAction = nextExAction = 0;
 	editListId = maxWriteLen = windowTextId = rankId = 0;
+	managerNumber3 = g_config.getNumber(ConfigManager::SPAWNTOWN_ID);
 
 	purchaseCallback = saleCallback = -1;
 	level = shootRange = 1;
@@ -4808,13 +4809,35 @@ void Player::manageAccount(const std::string &text)
 						}
 					}
 				}
+				else if(g_config.getBool(ConfigManager::START_CHOOSETOWN))
+				{
+					talkState[9] = false;
+					talkState[13] = true;
+					
+					bool firstPart = true;
+					for(TownMap::const_iterator it = Towns::getInstance()->getFirstTown(); it != Towns::getInstance()->getLastTown(); ++it)
+					{
+						if(it->second->getID() < 100)
+						{
+							if(firstPart)
+							{
+								msg << "Where do you want to live... " << it->second->getName();
+								firstPart = false;
+							}
+							else if(it->first - 1 != 0)
+								msg << ", " << it->second->getName();
+							else
+								msg << " or " << it->second->getName() << ".";
+						}
+					}
+				}
 				else if(!IOLoginData::getInstance()->playerExists(managerString, true))
 				{
 					talkState[1] = true;
 					for(int8_t i = 2; i <= 12; i++)
 						talkState[i] = false;
 
-					if(IOLoginData::getInstance()->createCharacter(managerNumber, managerString, managerNumber2, (uint16_t)managerSex))
+					if(IOLoginData::getInstance()->createCharacter(managerNumber, managerString, managerNumber2, (uint16_t)managerSex, managerNumber3))
 						msg << "Your character has been created.";
 					else
 						msg << "Your character couldn't be created, please try again.";
@@ -4845,13 +4868,35 @@ void Player::manageAccount(const std::string &text)
 			}
 			else if(checkText(text, "yes") && talkState[12])
 			{
-				if(!IOLoginData::getInstance()->playerExists(managerString, true))
+				if(g_config.getBool(ConfigManager::START_CHOOSETOWN))
+				{
+					talkState[12] = false;
+					talkState[13] = true;
+
+					bool firstPart = true;
+					for(TownMap::const_iterator it = Towns::getInstance()->getFirstTown(); it != Towns::getInstance()->getLastTown(); ++it)
+					{
+						if(it->second->getID() < 100)
+						{
+							if(firstPart)
+							{
+								msg << "Where do you want to live... " << it->second->getName();
+								firstPart = false;
+							}
+							else if(it->first - 1 != 0)
+								msg << ", " << it->second->getName();
+							else
+								msg << " or " << it->second->getName() << ".";
+						}
+					}
+				}
+				else if(!IOLoginData::getInstance()->playerExists(managerString, true))
 				{
 					talkState[1] = true;
 					for(int8_t i = 2; i <= 12; i++)
 						talkState[i] = false;
 
-					if(IOLoginData::getInstance()->createCharacter(managerNumber, managerString, managerNumber2, (uint16_t)managerSex))
+					if(IOLoginData::getInstance()->createCharacter(managerNumber, managerString, managerNumber2, (uint16_t)managerSex, managerNumber3))
 						msg << "Your character has been created.";
 					else
 						msg << "Your character couldn't be created, please try again.";
@@ -4868,6 +4913,49 @@ void Player::manageAccount(const std::string &text)
 				talkState[11] = true;
 				talkState[12] = false;
 				msg << "No? Then what would you like to be?";
+			}
+			else if(talkState[13])
+			{
+				for(TownMap::const_iterator it = Towns::getInstance()->getFirstTown(); it != Towns::getInstance()->getLastTown(); it++)
+				{
+					std::string tmp = asLowerCaseString(it->second->getName());
+					if(checkText(text, tmp) && it != Towns::getInstance()->getLastTown() && it->second->getID() < 100)
+					{
+						msg << "So do you want to live in " << it->second->getName() << ".. are you sure?";
+						managerNumber3 = it->first;
+						talkState[13] = false;
+						talkState[14] = true;
+					}
+				}
+
+				if(msg.str().length() == 17)
+					msg << "I don't understand where you would like to live... could you please repeat it?";
+			}
+			else if(checkText(text, "yes") && talkState[14])
+			{
+				if(!IOLoginData::getInstance()->playerExists(managerString, true))
+				{
+					talkState[1] = true;
+					for(int8_t i = 2; i <= 14; i++)
+						talkState[i] = false;
+
+					if(IOLoginData::getInstance()->createCharacter(managerNumber, managerString, managerNumber2, (uint16_t)managerSex, managerNumber3))
+						msg << "Your character has been created.";
+					else
+						msg << "Your character couldn't be created, please try again.";
+				}
+				else
+				{
+					talkState[6] = true;
+					talkState[9] = false;
+					msg << "A player with that name already exists, please choose another name.";
+				}
+			}
+			else if(checkText(text, "no") && talkState[14])
+			{
+				talkState[13] = true;
+				talkState[14] = false;
+				msg << "So where do you want to live?";
 			}
 			else if(checkText(text, "recovery key") && talkState[1])
 			{

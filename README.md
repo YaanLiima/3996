@@ -12,7 +12,7 @@
    MSVC15 libs and includes: https://github.com/YaanLiima/binaries/raw/master/vc15_pack.rar
    
 5. Compile on linux:
-	* apt-get install autogen autoconf build-essential pkg-config automake cmake g++ cpp gcc subversion lib32ncurses5-dev libreadline-dev libboost-dev libboost-thread-dev libboost-regex-dev libboost-date-time-dev libboost-filesystem-dev libgmp3-dev libxml2-dev liblua5.1-0-dev libssl-dev libmysql++-dev libtool libxml++-dev zlib1g-dev libcrypto++-dev libmysqlclient-dev
+	* apt-get install subversion autoconf build-essential pkg-config automake libboost-all-dev libgmp3-dev libxml2-dev liblua5.1-0-dev libssl-dev libmysql++-dev libtool libcrypto++-dev libmysqlclient-dev libsqlite3-dev libluajit-5.1-dev
 	* cd /3996-master
 	* chmod -R 996 src
 	* cd src

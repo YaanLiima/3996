@@ -4936,7 +4936,7 @@ void Player::manageAccount(const std::string &text)
 				if(!IOLoginData::getInstance()->playerExists(managerString, true))
 				{
 					talkState[1] = true;
-					for(int8_t i = 2; i <= 14; i++)
+					for(int8_t i = 2; i <= 12; i++)
 						talkState[i] = false;
 
 					if(IOLoginData::getInstance()->createCharacter(managerNumber, managerString, managerNumber2, (uint16_t)managerSex, managerNumber3))

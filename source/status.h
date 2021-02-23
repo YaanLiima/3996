@@ -60,6 +60,8 @@ class ProtocolStatus : public Protocol
 		enum {hasChecksum = false};
 		static const char* protocolName() {return "status protocol";}
 
+		static const uint64_t start;
+
 	protected:
 		static IpConnectMap ipConnectMap;
 		virtual void deleteProtocolTask();

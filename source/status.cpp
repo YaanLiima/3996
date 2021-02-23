@@ -35,6 +35,7 @@ extern Game g_game;
 uint32_t ProtocolStatus::protocolStatusCount = 0;
 #endif
 IpConnectMap ProtocolStatus::ipConnectMap;
+const uint64_t ProtocolStatus::start = OTSYS_TIME();
 
 void ProtocolStatus::onRecvFirstMessage(NetworkMessage& msg)
 {

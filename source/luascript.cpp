@@ -5746,7 +5746,7 @@ int32_t LuaInterface::luaGetWorldCreatures(lua_State* L)
 	return 1;
 }
 
-int32_t LuaInterface::luaGetWorldUpTime(lua_State* L)
+/*int32_t LuaInterface::luaGetWorldUpTime(lua_State* L)
 {
 	//getWorldUpTime()
 	uint32_t uptime = 0;
@@ -5754,6 +5754,12 @@ int32_t LuaInterface::luaGetWorldUpTime(lua_State* L)
 		uptime = status->getUptime();
 
 	lua_pushnumber(L, uptime);
+	return 1;
+}*/
+int32_t LuaInterface::luaGetWorldUpTime(lua_State* L)
+{
+	//getWorldUpTime()
+	lua_pushnumber(L, (OTSYS_TIME() - ProtocolStatus::start) / 1000);
 	return 1;
 }
 

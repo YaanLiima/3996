@@ -21,6 +21,13 @@
 #include <string>
 #include <list>
 
+enum CreatureType_t
+{
+	CREATURETYPE_PLAYER = 0,
+	CREATURETYPE_MONSTER = 1,
+	CREATURETYPE_NPC = 2
+};
+
 enum DatabaseEngine_t
 {
 	DATABASE_ENGINE_NONE = 0,

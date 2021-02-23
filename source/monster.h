@@ -51,6 +51,7 @@ class Monster : public Creature
 
 		virtual Monster* getMonster() {return this;}
 		virtual const Monster* getMonster() const {return this;}
+		virtual CreatureType_t getType() const {return CREATURETYPE_MONSTER;}
 
 		virtual uint32_t rangeId() {return 0x40000000;}
 		static AutoList<Monster> autoList;

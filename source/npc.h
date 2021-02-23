@@ -350,6 +350,7 @@ class Npc : public Creature
 
 		virtual Npc* getNpc() {return this;}
 		virtual const Npc* getNpc() const {return this;}
+		virtual CreatureType_t getType() const {return CREATURETYPE_NPC;}
 
 		virtual uint32_t rangeId() {return 0x80000000;}
 		static AutoList<Npc> autoList;
@@ -381,6 +382,9 @@ class Npc : public Creature
 
 		void setCreatureFocus(Creature* creature);
 		NpcScript* getInterface();
+		
+		void setHouser(bool _houser) {houser = _houser;}
+		const bool getHouser() const {return houser;}
 
 	protected:
 		Npc(const std::string& _name);
@@ -435,7 +439,7 @@ class Npc : public Creature
 		uint32_t walkTicks;
 		std::string name, nameDescription, m_filename;
 		int32_t talkRadius, idleTime, idleInterval, focusCreature;
-		bool floorChange, attackable, walkable, isIdle, hasBusyReply, hasScriptedFocus, defaultPublic;
+		bool floorChange, attackable, walkable, isIdle, hasBusyReply, hasScriptedFocus, defaultPublic, houser;
 		int64_t lastVoice;
 
 		typedef std::list<Player*> ShopPlayerList;

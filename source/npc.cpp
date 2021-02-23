@@ -127,6 +127,7 @@ void Npc::reset()
 	idleInterval = 5 * 60;
 	lastVoice = OTSYS_TIME();
 	defaultPublic = true;
+	houser = false; // walk inside houses
 
 	delete m_npcEventHandler;
 	m_npcEventHandler = NULL;
@@ -1866,7 +1867,7 @@ bool Npc::canWalkTo(const Position& fromPos, Direction dir)
 
 	Tile* tile = g_game.getTile(toPos);
 	if(!tile || g_game.isSwimmingPool(NULL, getTile(), false) != g_game.isSwimmingPool(NULL, tile,
-		false) || (!floorChange && (tile->floorChange() || tile->positionChange())))
+		false) || (!tile->getHouseTile() && getHouser()) || (!floorChange && (tile->floorChange() || tile->positionChange())))
 		return false;
 
 	return tile->__queryAdd(0, this, 1, FLAG_PATHFINDING) == RET_NOERROR;

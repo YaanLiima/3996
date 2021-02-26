@@ -20,14 +20,8 @@
 #include <iostream>
 #include <iomanip>
 
-#include <cryptopp/sha.h>
-#include <cryptopp/md5.h>
-#include <cryptopp/adler32.h>
-#include <cryptopp/hmac.h>
-
-#include <cryptopp/hex.h>
-#include <cryptopp/base64.h>
-#include <cryptopp/cryptlib.h>
+#include <openssl/sha.h>
+#include <openssl/md5.h>
 
 #include "vocation.h"
 #include "configmanager.h"
@@ -36,159 +30,78 @@ extern ConfigManager g_config;
 
 std::string transformToMD5(std::string plainText, bool upperCase)
 {
-	// Crypto++ MD5 object
-	CryptoPP::Weak::MD5 hash;
+	MD5_CTX c;
+	MD5_Init(&c);
+	MD5_Update(&c, plainText.c_str(), plainText.length());
 
-	// Use native byte instead of casting chars
-	byte digest[CryptoPP::Weak::MD5::DIGESTSIZE];
+	uint8_t md[MD5_DIGEST_LENGTH];
+	MD5_Final(md, &c);
 
-	// Do the actual calculation, require a byte value so we need a cast
-	hash.CalculateDigest(digest, (const byte*)plainText.c_str(), plainText.length());
+	char output[MD5_DIGEST_LENGTH * 2 + 1] = "";
+	for(int32_t i = 0; i < static_cast<int32_t>(sizeof(md)); i++)
+		sprintf(output, "%s%.2X", output, md[i]);
 
-	// Crypto++ HexEncoder object
-	CryptoPP::HexEncoder encoder;
-
-	// Our output
-	std::string output;
-
-	// Drop internal hex encoder and use this, returns uppercase by default
-	encoder.Attach(new CryptoPP::StringSink(output));
-	encoder.Put(digest, sizeof(digest));
-	encoder.MessageEnd();
-
-	// Make sure we want uppercase
 	if(upperCase)
-		return output;
+		return std::string(output);
 
-	// Convert to lowercase if needed
-	return asLowerCaseString(output);
+	return asLowerCaseString(std::string(output));
 }
 
 std::string transformToSHA1(std::string plainText, bool upperCase)
 {
-	// Crypto++ SHA1 object
-	CryptoPP::SHA1 hash;
+	SHA_CTX c;
+	SHA1_Init(&c);
+	SHA1_Update(&c, plainText.c_str(), plainText.length());
 
-	// Use native byte instead of casting chars
-	byte digest[CryptoPP::SHA1::DIGESTSIZE];
+	uint8_t md[SHA_DIGEST_LENGTH];
+	SHA1_Final(md, &c);
 
-	// Do the actual calculation, require a byte value so we need a cast
-	hash.CalculateDigest(digest, (const byte*)plainText.c_str(), plainText.length());
+	char output[SHA_DIGEST_LENGTH * 2 + 1] = "";
+	for(int32_t i = 0; i < static_cast<int32_t>(sizeof(md)); i++)
+		sprintf(output, "%s%.2X", output, md[i]);
 
-	// Crypto++ HexEncoder object
-	CryptoPP::HexEncoder encoder;
-
-	// Our output
-	std::string output;
-
-	// Drop internal hex encoder and use this, returns uppercase by default
-	encoder.Attach(new CryptoPP::StringSink(output));
-	encoder.Put(digest, sizeof(digest));
-	encoder.MessageEnd();
-
-	// Make sure we want uppercase
 	if(upperCase)
-		return output;
+		return std::string(output);
 
-	// Convert to lowercase if needed
-	return asLowerCaseString(output);
+	return asLowerCaseString(std::string(output));
 }
 
 std::string transformToSHA256(std::string plainText, bool upperCase)
 {
-	// Crypto++ SHA256 object
-	CryptoPP::SHA256 hash;
+	SHA256_CTX c;
+	SHA256_Init(&c);
+	SHA256_Update(&c, plainText.c_str(), plainText.length());
 
-	// Use native byte instead of casting chars
-	byte digest[CryptoPP::SHA256::DIGESTSIZE];
+	uint8_t md[SHA256_DIGEST_LENGTH];
+	SHA256_Final(md, &c);
 
-	// Do the actual calculation, require a byte value so we need a cast
-	hash.CalculateDigest(digest, (const byte*)plainText.c_str(), plainText.length());
+	char output[SHA256_DIGEST_LENGTH * 2 + 1] = "";
+	for(int32_t i = 0; i < static_cast<int32_t>(sizeof(md)); i++)
+		sprintf(output, "%s%.2X", output, md[i]);
 
-	// Crypto++ HexEncoder object
-	CryptoPP::HexEncoder encoder;
-
-	// Our output
-	std::string output;
-
-	// Drop internal hex encoder and use this, returns uppercase by default
-	encoder.Attach(new CryptoPP::StringSink(output));
-	encoder.Put(digest, sizeof(digest));
-	encoder.MessageEnd();
-
-	// Make sure we want uppercase
 	if(upperCase)
-		return output;
+		return std::string(output);
 
-	// Convert to lowercase if needed
-	return asLowerCaseString(output);
+	return asLowerCaseString(std::string(output));
 }
 
 std::string transformToSHA512(std::string plainText, bool upperCase)
 {
-	// Crypto++ SHA512 object
-	CryptoPP::SHA512 hash;
+	SHA512_CTX c;
+	SHA512_Init(&c);
+	SHA512_Update(&c, plainText.c_str(), plainText.length());
 
-	// Use native byte instead of casting chars
-	byte digest[CryptoPP::SHA512::DIGESTSIZE];
+	uint8_t md[SHA512_DIGEST_LENGTH];
+	SHA512_Final(md, &c);
 
-	// Do the actual calculation, require a byte value so we need a cast
-	hash.CalculateDigest(digest, (const byte*)plainText.c_str(), plainText.length());
+	char output[SHA512_DIGEST_LENGTH * 2 + 1] = "";
+	for(int32_t i = 0; i < static_cast<int32_t>(sizeof(md)); i++)
+		sprintf(output, "%s%.2X", output, md[i]);
 
-	// Crypto++ HexEncoder object
-	CryptoPP::HexEncoder encoder;
-
-	// Our output
-	std::string output;
-
-	// Drop internal hex encoder and use this, returns uppercase by default
-	encoder.Attach(new CryptoPP::StringSink(output));
-	encoder.Put(digest, sizeof(digest));
-	encoder.MessageEnd();
-
-	// Make sure we want uppercase
 	if(upperCase)
-		return output;
+		return std::string(output);
 
-	// Convert to lowercase if needed
-	return asLowerCaseString(output);
-}
-
-std::string transformToVAHash(std::string plainText, bool upperCase)
-{
-	std::string key = g_config.getString(ConfigManager::ENCRYPTION_KEY);
-	// This is basicaly a base64 string out of a sha512 lowcase string of the HMAC of the plaintext sha256 string with a configurated key
-	// Currently this removes all known weaknesses in the sha-2 implantation
-	// base64(HMAC<SHA512>(key, SHA256(plainText)));
-
-	// Get SHA256
-	std::string sha256 = transformToSHA256(plainText, false);
-
-	// This holds the HMAC
-	// Use native byte instead of casting chars
-	byte digest[CryptoPP::SHA512::DIGESTSIZE];
-
-	// Do the actual calculation and setup, require a byte value so we need a cast on the key and the input
-	CryptoPP::HMAC<CryptoPP::SHA512>((const byte*)key.c_str(), key.length()).CalculateDigest(
-		digest, (const byte*)sha256.c_str(), CryptoPP::SHA256::DIGESTSIZE);
-
-	// Crypto++ Base64Encoder object
-	CryptoPP::Base64Encoder encoder;
-
-	// Our output
-	std::string output;
-
-	// Encode to base64
-	encoder.Attach(new CryptoPP::StringSink(output));
-	encoder.Put(digest, sizeof(digest));
-	encoder.MessageEnd();
-
-	// Make sure we want uppercase
-	if(upperCase)
-		return output;
-
-	// Convert to lowercase if needed
-	return asLowerCaseString(output);
+	return asLowerCaseString(std::string(output));
 }
 
 void _encrypt(std::string& str, bool upperCase)
@@ -206,9 +119,6 @@ void _encrypt(std::string& str, bool upperCase)
 			break;
 		case ENCRYPTION_SHA512:
 			str = transformToSHA512(str, upperCase);
-			break;
-		case ENCRYPTION_VAHASH:
-			str = transformToVAHash(str, upperCase);
 			break;
 		default:
 		{
@@ -414,17 +324,13 @@ bool utf8ToLatin1(char* intext, std::string& outtext)
 	return true;
 }
 
-StringVec explodeString(const std::string& string, const std::string& separator, bool trim/* = true*/)
+StringVec explodeString(const std::string& string, const std::string& separator)
 {
 	StringVec returnVector;
 	size_t start = 0, end = 0;
 	while((end = string.find(separator, start)) != std::string::npos)
 	{
-		std::string t = string.substr(start, end - start);
-		if(trim)
-			trimString(t);
-
-		returnVector.push_back(t);
+		returnVector.push_back(string.substr(start, end - start));
 		start = end + separator.size();
 	}
 
@@ -1117,193 +1023,7 @@ MagicEffectNames magicEffectNames[] =
 	{"bats",		MAGIC_EFFECT_BATS},
 	{"smoke",		MAGIC_EFFECT_SMOKE},
 	{"insects",		MAGIC_EFFECT_INSECTS},
-	{"dragonhead",	MAGIC_EFFECT_DRAGONHEAD},
-	{"efeito70",	MAGIC_EFFECT_70},
-	{"efeito71",	MAGIC_EFFECT_71},
-	{"efeito72",	MAGIC_EFFECT_72},
-	{"efeito73",	MAGIC_EFFECT_73},
-	{"efeito74",	MAGIC_EFFECT_74},
-	{"efeito75",	MAGIC_EFFECT_75},
-	{"efeito76",	MAGIC_EFFECT_76},
-	{"efeito77",	MAGIC_EFFECT_77},
-	{"efeito78",	MAGIC_EFFECT_78},
-	{"efeito79",	MAGIC_EFFECT_79},
-	{"efeito80",	MAGIC_EFFECT_80},
-	{"efeito81",	MAGIC_EFFECT_81},
-	{"efeito82",	MAGIC_EFFECT_82},
-	{"efeito83",	MAGIC_EFFECT_83},
-	{"efeito84",	MAGIC_EFFECT_84},
-	{"efeito85",	MAGIC_EFFECT_85},
-	{"efeito86",	MAGIC_EFFECT_86},
-	{"efeito87",	MAGIC_EFFECT_87},
-	{"efeito88",	MAGIC_EFFECT_88},
-	{"efeito89",	MAGIC_EFFECT_89},
-	{"efeito90",	MAGIC_EFFECT_90},
-	{"efeito91",	MAGIC_EFFECT_91},
-	{"efeito92",	MAGIC_EFFECT_92},
-	{"efeito93",	MAGIC_EFFECT_93},
-	{"efeito94",	MAGIC_EFFECT_94},
-	{"efeito95",	MAGIC_EFFECT_95},
-	{"efeito96",	MAGIC_EFFECT_96},
-	{"efeito97",	MAGIC_EFFECT_97},
-	{"efeito98",	MAGIC_EFFECT_98},
-	{"efeito99",	MAGIC_EFFECT_99},
-	{"efeito100",	MAGIC_EFFECT_100},
-	{"efeito101",	MAGIC_EFFECT_101},
-	{"efeito102",	MAGIC_EFFECT_102},
-	{"efeito103",	MAGIC_EFFECT_103},
-	{"efeito104",	MAGIC_EFFECT_104},
-	{"efeito105",	MAGIC_EFFECT_105},
-	{"efeito106",	MAGIC_EFFECT_106},
-	{"efeito107",	MAGIC_EFFECT_107},
-	{"efeito108",	MAGIC_EFFECT_108},
-	{"efeito109",	MAGIC_EFFECT_109},
-	{"efeito110",	MAGIC_EFFECT_110},
-	{"efeito111",	MAGIC_EFFECT_111},
-	{"efeito112",	MAGIC_EFFECT_112},
-	{"efeito113",	MAGIC_EFFECT_113},
-	{"efeito114",	MAGIC_EFFECT_114},
-	{"efeito115",	MAGIC_EFFECT_115},
-	{"efeito116",	MAGIC_EFFECT_116},
-	{"efeito117",	MAGIC_EFFECT_117},
-	{"efeito118",	MAGIC_EFFECT_118},
-	{"efeito119",	MAGIC_EFFECT_119},
-	{"efeito120",	MAGIC_EFFECT_120},
-	{"efeito121",	MAGIC_EFFECT_121},
-	{"efeito122",	MAGIC_EFFECT_122},
-	{"efeito123",	MAGIC_EFFECT_123},
-	{"efeito124",	MAGIC_EFFECT_124},
-	{"efeito125",	MAGIC_EFFECT_125},
-	{"efeito126",	MAGIC_EFFECT_126},
-	{"efeito127",	MAGIC_EFFECT_127},
-	{"efeito128",	MAGIC_EFFECT_128},
-	{"efeito129",	MAGIC_EFFECT_129},
-	{"efeito130",	MAGIC_EFFECT_130},
-	{"efeito131",	MAGIC_EFFECT_131},
-	{"efeito132",	MAGIC_EFFECT_132},
-	{"efeito133",	MAGIC_EFFECT_133},
-	{"efeito134",	MAGIC_EFFECT_134},
-	{"efeito135",	MAGIC_EFFECT_135},
-	{"efeito136",	MAGIC_EFFECT_136},
-	{"efeito137",	MAGIC_EFFECT_137},
-	{"efeito138",	MAGIC_EFFECT_138},
-	{"efeito139",	MAGIC_EFFECT_139},
-	{"efeito140",	MAGIC_EFFECT_140},
-	{"efeito141",	MAGIC_EFFECT_141},
-	{"efeito142",	MAGIC_EFFECT_142},
-	{"efeito143",	MAGIC_EFFECT_143},
-	{"efeito144",	MAGIC_EFFECT_144},
-	{"efeito145",	MAGIC_EFFECT_145},
-	{"efeito146",	MAGIC_EFFECT_146},
-	{"efeito147",	MAGIC_EFFECT_147},
-	{"efeito148",	MAGIC_EFFECT_148},
-	{"efeito149",	MAGIC_EFFECT_149},
-	{"efeito150",	MAGIC_EFFECT_150},
-	{"efeito151",	MAGIC_EFFECT_151},
-	{"efeito152",	MAGIC_EFFECT_152},
-	{"efeito153",	MAGIC_EFFECT_153},
-	{"efeito154",	MAGIC_EFFECT_154},
-	{"efeito155",	MAGIC_EFFECT_155},
-	{"efeito156",	MAGIC_EFFECT_156},
-	{"efeito157",	MAGIC_EFFECT_157},
-	{"efeito158",	MAGIC_EFFECT_158},
-	{"efeito159",	MAGIC_EFFECT_159},
-	{"efeito160",	MAGIC_EFFECT_160},
-	{"efeito161",	MAGIC_EFFECT_161},
-	{"efeito162",	MAGIC_EFFECT_162},
-	{"efeito163",	MAGIC_EFFECT_163},
-	{"efeito164",	MAGIC_EFFECT_164},
-	{"efeito165",	MAGIC_EFFECT_165},
-	{"efeito166",	MAGIC_EFFECT_166},
-	{"efeito167",	MAGIC_EFFECT_167},
-	{"efeito168",	MAGIC_EFFECT_168},
-	{"efeito169",	MAGIC_EFFECT_169},
-	{"efeito170",	MAGIC_EFFECT_170},
-	{"efeito171",	MAGIC_EFFECT_171},
-	{"efeito172",	MAGIC_EFFECT_172},
-	{"efeito173",	MAGIC_EFFECT_173},
-	{"efeito174",	MAGIC_EFFECT_174},
-	{"efeito175",	MAGIC_EFFECT_175},
-	{"efeito176",	MAGIC_EFFECT_176},
-	{"efeito177",	MAGIC_EFFECT_177},
-	{"efeito178",	MAGIC_EFFECT_178},
-	{"efeito179",	MAGIC_EFFECT_179},
-	{"efeito180",	MAGIC_EFFECT_180},
-	{"efeito181",	MAGIC_EFFECT_181},
-	{"efeito182",	MAGIC_EFFECT_182},
-	{"efeito183",	MAGIC_EFFECT_183},
-	{"efeito184",	MAGIC_EFFECT_184},
-	{"efeito185",	MAGIC_EFFECT_185},
-	{"efeito186",	MAGIC_EFFECT_186},
-	{"efeito187",	MAGIC_EFFECT_187},
-	{"efeito188",	MAGIC_EFFECT_188},
-	{"efeito189",	MAGIC_EFFECT_189},
-	{"efeito190",	MAGIC_EFFECT_190},
-	{"efeito191",	MAGIC_EFFECT_191},
-	{"efeito192",	MAGIC_EFFECT_192},
-	{"efeito193",	MAGIC_EFFECT_193},
-	{"efeito194",	MAGIC_EFFECT_194},
-	{"efeito195",	MAGIC_EFFECT_195},
-	{"efeito196",	MAGIC_EFFECT_196},
-	{"efeito197",	MAGIC_EFFECT_197},
-	{"efeito198",	MAGIC_EFFECT_198},
-	{"efeito199",	MAGIC_EFFECT_199},
-	{"efeito200",	MAGIC_EFFECT_200},
-	{"efeito201",	MAGIC_EFFECT_201},
-	{"efeito202",	MAGIC_EFFECT_202},
-	{"efeito203",	MAGIC_EFFECT_203},
-	{"efeito204",	MAGIC_EFFECT_204},
-	{"efeito205",	MAGIC_EFFECT_205},
-	{"efeito206",	MAGIC_EFFECT_206},
-	{"efeito207",	MAGIC_EFFECT_207},
-	{"efeito208",	MAGIC_EFFECT_208},
-	{"efeito209",	MAGIC_EFFECT_209},
-	{"efeito210",	MAGIC_EFFECT_210},
-	{"efeito211",	MAGIC_EFFECT_211},
-	{"efeito212",	MAGIC_EFFECT_212},
-	{"efeito213",	MAGIC_EFFECT_213},
-	{"efeito214",	MAGIC_EFFECT_214},
-	{"efeito215",	MAGIC_EFFECT_215},
-	{"efeito216",	MAGIC_EFFECT_216},
-	{"efeito217",	MAGIC_EFFECT_217},
-	{"efeito218",	MAGIC_EFFECT_218},
-	{"efeito219",	MAGIC_EFFECT_219},
-	{"efeito220",	MAGIC_EFFECT_220},
-	{"efeito221",	MAGIC_EFFECT_221},
-	{"efeito222",	MAGIC_EFFECT_222},
-	{"efeito223",	MAGIC_EFFECT_223},
-	{"efeito224",	MAGIC_EFFECT_224},
-	{"efeito225",	MAGIC_EFFECT_225},
-	{"efeito226",	MAGIC_EFFECT_226},
-	{"efeito227",	MAGIC_EFFECT_227},
-	{"efeito228",	MAGIC_EFFECT_228},
-	{"efeito229",	MAGIC_EFFECT_229},
-	{"efeito230",	MAGIC_EFFECT_230},
-	{"efeito231",	MAGIC_EFFECT_231},
-	{"efeito232",	MAGIC_EFFECT_232},
-	{"efeito233",	MAGIC_EFFECT_233},
-	{"efeito234",	MAGIC_EFFECT_234},
-	{"efeito235",	MAGIC_EFFECT_235},
-	{"efeito236",	MAGIC_EFFECT_236},
-	{"efeito237",	MAGIC_EFFECT_237},
-	{"efeito238",	MAGIC_EFFECT_238},
-	{"efeito239",	MAGIC_EFFECT_239},
-	{"efeito240",	MAGIC_EFFECT_240},
-	{"efeito241",	MAGIC_EFFECT_241},
-	{"efeito242",	MAGIC_EFFECT_242},
-	{"efeito243",	MAGIC_EFFECT_243},
-	{"efeito244",	MAGIC_EFFECT_244},
-	{"efeito245",	MAGIC_EFFECT_245},
-	{"efeito246",	MAGIC_EFFECT_246},
-	{"efeito247",	MAGIC_EFFECT_247},
-	{"efeito248",	MAGIC_EFFECT_248},
-	{"efeito249",	MAGIC_EFFECT_249},
-	{"efeito250",	MAGIC_EFFECT_250},
-	{"efeito251",	MAGIC_EFFECT_251},
-	{"efeito252",	MAGIC_EFFECT_252},
-	{"efeito253",	MAGIC_EFFECT_253},
-	{"efeito254",	MAGIC_EFFECT_254},
-	{"efeito255",	MAGIC_EFFECT_255}
+	{"dragonhead",	MAGIC_EFFECT_DRAGONHEAD}
 };
 
 ShootTypeNames shootTypeNames[] =
@@ -1350,221 +1070,7 @@ ShootTypeNames shootTypeNames[] =
 	{"smallearth",		SHOOT_EFFECT_SMALLEARTH},
 	{"eartharrow",		SHOOT_EFFECT_EARTHARROW},
 	{"explosion",		SHOOT_EFFECT_EXPLOSION},
-	{"cake",		SHOOT_EFFECT_CAKE},
-	{"missile42",		SHOOT_EFFECT_42},
-	{"missile43",		SHOOT_EFFECT_43},
-	{"missile44",		SHOOT_EFFECT_44},
-	{"missile45",		SHOOT_EFFECT_45},
-	{"missile46",		SHOOT_EFFECT_46},
-	{"missile47",		SHOOT_EFFECT_47},
-	{"missile48",		SHOOT_EFFECT_48},
-	{"missile49",		SHOOT_EFFECT_49},
-	{"missile50",		SHOOT_EFFECT_50},
-	{"missile51",		SHOOT_EFFECT_51},
-	{"missile52",		SHOOT_EFFECT_52},
-	{"missile53",		SHOOT_EFFECT_53},
-	{"missile54",		SHOOT_EFFECT_54},
-	{"missile55",		SHOOT_EFFECT_55},
-	{"missile56",		SHOOT_EFFECT_56},
-	{"missile57",		SHOOT_EFFECT_57},
-	{"missile58",		SHOOT_EFFECT_58},
-	{"missile59",		SHOOT_EFFECT_59},
-	{"missile60",		SHOOT_EFFECT_60},
-	{"missile61",		SHOOT_EFFECT_61},
-	{"missile62",		SHOOT_EFFECT_62},
-	{"missile63",		SHOOT_EFFECT_63},
-	{"missile64",		SHOOT_EFFECT_64},
-	{"missile65",		SHOOT_EFFECT_65},
-	{"missile66",		SHOOT_EFFECT_66},
-	{"missile67",		SHOOT_EFFECT_67},
-	{"missile68",		SHOOT_EFFECT_68},
-	{"missile69",		SHOOT_EFFECT_69},
-	{"missile70",		SHOOT_EFFECT_70},
-	{"missile71",		SHOOT_EFFECT_71},
-	{"missile72",		SHOOT_EFFECT_72},
-	{"missile73",		SHOOT_EFFECT_73},
-	{"missile74",		SHOOT_EFFECT_74},
-	{"missile75",		SHOOT_EFFECT_75},
-	{"missile76",		SHOOT_EFFECT_76},
-	{"missile77",		SHOOT_EFFECT_77},
-	{"missile78",		SHOOT_EFFECT_78},
-	{"missile79",		SHOOT_EFFECT_79},
-	{"missile80",		SHOOT_EFFECT_80},
-	{"missile81",		SHOOT_EFFECT_81},
-	{"missile82",		SHOOT_EFFECT_82},
-	{"missile83",		SHOOT_EFFECT_83},
-	{"missile84",		SHOOT_EFFECT_84},
-	{"missile85",		SHOOT_EFFECT_85},
-	{"missile86",		SHOOT_EFFECT_86},
-	{"missile87",		SHOOT_EFFECT_87},
-	{"missile88",		SHOOT_EFFECT_88},
-	{"missile89",		SHOOT_EFFECT_89},
-	{"missile90",		SHOOT_EFFECT_90},
-	{"missile91",		SHOOT_EFFECT_91},
-	{"missile92",		SHOOT_EFFECT_92},
-	{"missile93",		SHOOT_EFFECT_93},
-	{"missile94",		SHOOT_EFFECT_94},
-	{"missile95",		SHOOT_EFFECT_95},
-	{"missile96",		SHOOT_EFFECT_96},
-	{"missile97",		SHOOT_EFFECT_97},
-	{"missile98",		SHOOT_EFFECT_98},
-	{"missile99",		SHOOT_EFFECT_99},
-	{"missile100",		SHOOT_EFFECT_100},
-	{"missile101",		SHOOT_EFFECT_101},
-	{"missile102",		SHOOT_EFFECT_102},
-	{"missile103",		SHOOT_EFFECT_103},
-	{"missile104",		SHOOT_EFFECT_104},
-	{"missile105",		SHOOT_EFFECT_105},
-	{"missile106",		SHOOT_EFFECT_106},
-	{"missile107",		SHOOT_EFFECT_107},
-	{"missile108",		SHOOT_EFFECT_108},
-	{"missile109",		SHOOT_EFFECT_109},
-	{"missile110",		SHOOT_EFFECT_110},
-	{"missile111",		SHOOT_EFFECT_111},
-	{"missile112",		SHOOT_EFFECT_112},
-	{"missile113",		SHOOT_EFFECT_113},
-	{"missile114",		SHOOT_EFFECT_114},
-	{"missile115",		SHOOT_EFFECT_115},
-	{"missile116",		SHOOT_EFFECT_116},
-	{"missile117",		SHOOT_EFFECT_117},
-	{"missile118",		SHOOT_EFFECT_118},
-	{"missile119",		SHOOT_EFFECT_119},
-	{"missile120",		SHOOT_EFFECT_120},
-	{"missile121",		SHOOT_EFFECT_121},
-	{"missile122",		SHOOT_EFFECT_122},
-	{"missile123",		SHOOT_EFFECT_123},
-	{"missile124",		SHOOT_EFFECT_124},
-	{"missile125",		SHOOT_EFFECT_125},
-	{"missile126",		SHOOT_EFFECT_126},
-	{"missile127",		SHOOT_EFFECT_127},
-	{"missile128",		SHOOT_EFFECT_128},
-	{"missile129",		SHOOT_EFFECT_129},
-	{"missile130",		SHOOT_EFFECT_130},
-	{"missile131",		SHOOT_EFFECT_131},
-	{"missile132",		SHOOT_EFFECT_132},
-	{"missile133",		SHOOT_EFFECT_133},
-	{"missile134",		SHOOT_EFFECT_134},
-	{"missile135",		SHOOT_EFFECT_135},
-	{"missile136",		SHOOT_EFFECT_136},
-	{"missile137",		SHOOT_EFFECT_137},
-	{"missile138",		SHOOT_EFFECT_138},
-	{"missile139",		SHOOT_EFFECT_139},
-	{"missile140",		SHOOT_EFFECT_140},
-	{"missile141",		SHOOT_EFFECT_141},
-	{"missile142",		SHOOT_EFFECT_142},
-	{"missile143",		SHOOT_EFFECT_143},
-	{"missile144",		SHOOT_EFFECT_144},
-	{"missile145",		SHOOT_EFFECT_145},
-	{"missile146",		SHOOT_EFFECT_146},
-	{"missile147",		SHOOT_EFFECT_147},
-	{"missile148",		SHOOT_EFFECT_148},
-	{"missile149",		SHOOT_EFFECT_149},
-	{"missile150",		SHOOT_EFFECT_150},
-	{"missile151",		SHOOT_EFFECT_151},
-	{"missile152",		SHOOT_EFFECT_152},
-	{"missile153",		SHOOT_EFFECT_153},
-	{"missile154",		SHOOT_EFFECT_154},
-	{"missile155",		SHOOT_EFFECT_155},
-	{"missile156",		SHOOT_EFFECT_156},
-	{"missile157",		SHOOT_EFFECT_157},
-	{"missile158",		SHOOT_EFFECT_158},
-	{"missile159",		SHOOT_EFFECT_159},
-	{"missile160",		SHOOT_EFFECT_160},
-	{"missile161",		SHOOT_EFFECT_161},
-	{"missile162",		SHOOT_EFFECT_162},
-	{"missile163",		SHOOT_EFFECT_163},
-	{"missile164",		SHOOT_EFFECT_164},
-	{"missile165",		SHOOT_EFFECT_165},
-	{"missile166",		SHOOT_EFFECT_166},
-	{"missile167",		SHOOT_EFFECT_167},
-	{"missile168",		SHOOT_EFFECT_168},
-	{"missile169",		SHOOT_EFFECT_169},
-	{"missile170",		SHOOT_EFFECT_170},
-	{"missile171",		SHOOT_EFFECT_171},
-	{"missile172",		SHOOT_EFFECT_172},
-	{"missile173",		SHOOT_EFFECT_173},
-	{"missile174",		SHOOT_EFFECT_174},
-	{"missile175",		SHOOT_EFFECT_175},
-	{"missile176",		SHOOT_EFFECT_176},
-	{"missile177",		SHOOT_EFFECT_177},
-	{"missile178",		SHOOT_EFFECT_178},
-	{"missile179",		SHOOT_EFFECT_179},
-	{"missile180",		SHOOT_EFFECT_180},
-	{"missile181",		SHOOT_EFFECT_181},
-	{"missile182",		SHOOT_EFFECT_182},
-	{"missile183",		SHOOT_EFFECT_183},
-	{"missile184",		SHOOT_EFFECT_184},
-	{"missile185",		SHOOT_EFFECT_185},
-	{"missile186",		SHOOT_EFFECT_186},
-	{"missile187",		SHOOT_EFFECT_187},
-	{"missile188",		SHOOT_EFFECT_188},
-	{"missile189",		SHOOT_EFFECT_189},
-	{"missile190",		SHOOT_EFFECT_190},
-	{"missile191",		SHOOT_EFFECT_191},
-	{"missile192",		SHOOT_EFFECT_192},
-	{"missile193",		SHOOT_EFFECT_193},
-	{"missile194",		SHOOT_EFFECT_194},
-	{"missile195",		SHOOT_EFFECT_195},
-	{"missile196",		SHOOT_EFFECT_196},
-	{"missile197",		SHOOT_EFFECT_197},
-	{"missile198",		SHOOT_EFFECT_198},
-	{"missile199",		SHOOT_EFFECT_199},
-	{"missile200",		SHOOT_EFFECT_200},
-	{"missile201",		SHOOT_EFFECT_201},
-	{"missile202",		SHOOT_EFFECT_202},
-	{"missile203",		SHOOT_EFFECT_203},
-	{"missile204",		SHOOT_EFFECT_204},
-	{"missile205",		SHOOT_EFFECT_205},
-	{"missile206",		SHOOT_EFFECT_206},
-	{"missile207",		SHOOT_EFFECT_207},
-	{"missile208",		SHOOT_EFFECT_208},
-	{"missile209",		SHOOT_EFFECT_209},
-	{"missile210",		SHOOT_EFFECT_210},
-	{"missile211",		SHOOT_EFFECT_211},
-	{"missile212",		SHOOT_EFFECT_212},
-	{"missile213",		SHOOT_EFFECT_213},
-	{"missile214",		SHOOT_EFFECT_214},
-	{"missile215",		SHOOT_EFFECT_215},
-	{"missile216",		SHOOT_EFFECT_216},
-	{"missile217",		SHOOT_EFFECT_217},
-	{"missile218",		SHOOT_EFFECT_218},
-	{"missile219",		SHOOT_EFFECT_219},
-	{"missile220",		SHOOT_EFFECT_220},
-	{"missile221",		SHOOT_EFFECT_221},
-	{"missile222",		SHOOT_EFFECT_222},
-	{"missile223",		SHOOT_EFFECT_223},
-	{"missile224",		SHOOT_EFFECT_224},
-	{"missile225",		SHOOT_EFFECT_225},
-	{"missile226",		SHOOT_EFFECT_226},
-	{"missile227",		SHOOT_EFFECT_227},
-	{"missile228",		SHOOT_EFFECT_228},
-	{"missile229",		SHOOT_EFFECT_229},
-	{"missile230",		SHOOT_EFFECT_230},
-	{"missile231",		SHOOT_EFFECT_231},
-	{"missile232",		SHOOT_EFFECT_232},
-	{"missile233",		SHOOT_EFFECT_233},
-	{"missile234",		SHOOT_EFFECT_234},
-	{"missile235",		SHOOT_EFFECT_235},
-	{"missile236",		SHOOT_EFFECT_236},
-	{"missile237",		SHOOT_EFFECT_237},
-	{"missile238",		SHOOT_EFFECT_238},
-	{"missile239",		SHOOT_EFFECT_239},
-	{"missile240",		SHOOT_EFFECT_240},
-	{"missile241",		SHOOT_EFFECT_241},
-	{"missile242",		SHOOT_EFFECT_242},
-	{"missile243",		SHOOT_EFFECT_243},
-	{"missile244",		SHOOT_EFFECT_244},
-	{"missile245",		SHOOT_EFFECT_245},
-	{"missile246",		SHOOT_EFFECT_246},
-	{"missile247",		SHOOT_EFFECT_247},
-	{"missile248",		SHOOT_EFFECT_248},
-	{"missile249",		SHOOT_EFFECT_249},
-	{"missile250",		SHOOT_EFFECT_250},
-	{"missile251",		SHOOT_EFFECT_251},
-	{"missile252",		SHOOT_EFFECT_252},
-	{"missile253",		SHOOT_EFFECT_253},
-	{"missile254",		SHOOT_EFFECT_254},
-	{"missile255",		SHOOT_EFFECT_254}
+	{"cake",		SHOOT_EFFECT_CAKE}
 };
 
 CombatTypeNames combatTypeNames[] =
@@ -2059,19 +1565,26 @@ bool fileExists(const char* filename)
 
 uint32_t adlerChecksum(uint8_t* data, size_t length)
 {
-	// Keep this check, rarely used I think
 	if(length > NETWORK_MAX_SIZE || !length)
 		return 0;
 
-	// Crypto++ object
-	CryptoPP::Adler32 adler;
-	// Digest cash object, cast later
-	byte digest[CryptoPP::Adler32::DIGESTSIZE];
-
-	// Do the calculation now
-	adler.CalculateDigest(digest, (const byte*)data, length);
-	// return uint32_t cast type
-	return (uint32_t)(((uint16_t)digest[0] << 8 | digest[1]) << 16) | ((uint16_t)digest[2] << 8 | digest[3]);
+	const uint16_t adler = 65521;
+	uint32_t a = 1, b = 0;
+	while(length > 0)
+	{
+		size_t tmp = length > 5552 ? 5552 : length;
+		length -= tmp;
+		do
+		{
+			a += *data++;
+			b += a;
+		}
+		while(--tmp);
+		a %= adler;
+		b %= adler;
+	}
+	
+	return (b << 16) | a;
 }
 
 std::string getFilePath(FileType_t type, std::string name/* = ""*/)

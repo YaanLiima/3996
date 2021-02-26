@@ -49,9 +49,6 @@
 	#define	__FUNCTION__ __func__
 #endif
 
-#define CRYPTOPP_ENABLE_NAMESPACE_WEAK 1
-#define CRYPTOPP_DEFAULT_NO_DLL
-
 #define BOOST_ASIO_ENABLE_CANCELIO 1
 #define BOOST_FILESYSTEM_VERSION 3
 #ifdef _MSC_VER
@@ -93,6 +90,7 @@
 	#pragma warning(disable:4244)
 	#pragma warning(disable:4267)
 	#pragma warning(disable:4018)
+	#pragma warning(disable:4309)
 	#pragma warning(disable:4996) // '_ftime64' : this function or variable may be unsafe
 
 	#ifndef _WIN32
@@ -162,18 +160,18 @@
 	#define xmlFree(s) free(s)
 #endif
 
-#ifdef __USE_MINIDUMP__
+//#ifdef __USE_MINIDUMP__
 	#ifndef __EXCEPTION_TRACER__
-		#define __EXCEPTION_TRACER__
-	#endif
-#endif
+//		#define __EXCEPTION_TRACER__
+//	#endif
+//#endif
 
-#ifdef __DEBUG_EXCEPTION_REPORT__
-	#define DEBUG_REPORT int *a = NULL; *a = 1;
-#elif defined __EXCEPTION_TRACER__
-	#include "exception.h"
-	#define DEBUG_REPORT ExceptionHandler::dumpStack();
-#else
+//#ifdef __DEBUG_EXCEPTION_REPORT__
+//	#define DEBUG_REPORT int *a = NULL; *a = 1;
+//#elif defined __EXCEPTION_TRACER__
+//	#include "exception.h"
+//	#define DEBUG_REPORT ExceptionHandler::dumpStack();
+//#else
 	#define DEBUG_REPORT
 #endif
 #endif

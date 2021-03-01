@@ -911,7 +911,7 @@ void LuaInterface::executeTimer(uint32_t eventIndex)
 		for(std::list<int32_t>::reverse_iterator rt = it->second.parameters.rbegin(); rt != it->second.parameters.rend(); ++rt)
 			lua_rawgeti(m_luaState, LUA_REGISTRYINDEX, *rt);
 
-		//CASTll the function
+		//call the function
 		if(reserveEnv())
 		{
 			ScriptEnviroment* env = getEnv();
@@ -1877,10 +1877,10 @@ void LuaInterface::registerFunctions()
 	//doPlayerRemoveOutfitId(cid, outfitId[, addon = 0])
 	lua_register(m_luaState, "doPlayerRemoveOutfitId", LuaInterface::luaDoPlayerRemoveOutfitId);
 
-	//CASTnPlayerWearOutfit(cid, looktype[, addon = 0])
+	//canPlayerWearOutfit(cid, looktype[, addon = 0])
 	lua_register(m_luaState, "canPlayerWearOutfit", LuaInterface::luaCanPlayerWearOutfit);
 
-	//CASTnPlayerWearOutfitId(cid, outfitId[, addon = 0])
+	//canPlayerWearOutfitId(cid, outfitId[, addon = 0])
 	lua_register(m_luaState, "canPlayerWearOutfitId", LuaInterface::luaCanPlayerWearOutfitId);
 
 	//getCreatureCondition(cid, condition[, subId = 0])
@@ -8273,7 +8273,7 @@ int32_t LuaInterface::luaDoPlayerRemoveOutfitId(lua_State *L)
 
 int32_t LuaInterface::luaCanPlayerWearOutfit(lua_State* L)
 {
-	//CASTnPlayerWearOutfit(cid, looktype[, addon = 0])
+	//canPlayerWearOutfit(cid, looktype[, addon = 0])
 	uint32_t addon = 0;
 	if(lua_gettop(L) > 2)
 		addon = popNumber(L);
@@ -8302,7 +8302,7 @@ int32_t LuaInterface::luaCanPlayerWearOutfit(lua_State* L)
 
 int32_t LuaInterface::luaCanPlayerWearOutfitId(lua_State* L)
 {
-	//CASTnPlayerWearOutfitId(cid, outfitId[, addon = 0])
+	//canPlayerWearOutfitId(cid, outfitId[, addon = 0])
 	uint32_t addon = 0;
 	if(lua_gettop(L) > 2)
 		addon = popNumber(L);

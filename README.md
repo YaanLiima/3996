@@ -1,5 +1,6 @@
 1. Compiled on Windows
 	* x32 (dev-cpp): https://github.com/YaanLiima/binaries/raw/master/TheForgottenServer%20rev3996%208.6(x32).rar
+	* x64 (visual-studio 2010): https://github.com/YaanLiima/binaries/blob/master/TheForgottenServer%20rev3996%208.6(x64).zip
 	
 2. Source: 
 	* https://www.xtibia.com/forum/topic/249977-860-tfs-04-rev3996-war-cast/
@@ -17,3 +18,16 @@
 	* chmod -R 996 src
 	* cd src
 	* ./autogen.sh && ./configure --enable-sqlite --enable-mysql --enable-root-permission --enable-server-diag && ./build.sh
+	
+
+6. ERROR Ubuntu 18.04?
+```configure: error: "boost::unordered_set header not found. Please update your boost to at least 1.40."````
+#Solution:
+Search the source for everything you have:
+* boost/tr1/unordered_set
+Replaces with:
+* boost/unordered_set
+And at house.h look for:
+* typedef std::tr1::unordered_set<uint32_t> PlayerList;
+Replaces with:
+* typedef boost::unordered_set<uint32_t> PlayerList;

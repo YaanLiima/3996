@@ -937,27 +937,27 @@ bool TalkAction::guildCreate(Creature* creature, const std::string&, const std::
 	const uint32_t levelToFormGuild = g_config.getNumber(ConfigManager::LEVEL_TO_FORM_GUILD);
 	if(player->getLevel() < levelToFormGuild)
 	{
-		char buffer[70 + levelToFormGuild];
-		sprintf(buffer, "You have to be at least Level %d to form a guild.", levelToFormGuild);
-		player->sendCancel(buffer);
+		std::stringstream ss;
+		ss << "You have to be at least Level " << levelToFormGuild << " to form a guild.";
+		player->sendCancel(ss.str());
 		return true;
 	}
 
 	const int32_t premiumDays = g_config.getNumber(ConfigManager::GUILD_PREMIUM_DAYS);
 	if(player->getPremiumDays() < premiumDays && !g_config.getBool(ConfigManager::FREE_PREMIUM))
 	{
-		char buffer[70 + premiumDays];
-		sprintf(buffer, "You need to have at least %d premium days to form a guild.", premiumDays);
-		player->sendCancel(buffer);
+		std::stringstream ss;
+		ss << "You need to have at least " << premiumDays << " premium days to form a guild.";
+		player->sendCancel(ss.str());
 		return true;
 	}
 
 	player->setGuildName(param_);
 	IOGuild::getInstance()->createGuild(player);
 
-	char buffer[50 + maxLength];
-	sprintf(buffer, "You have formed guild \"%s\"!", param_.c_str());
-	player->sendTextMessage(MSG_INFO_DESCR, buffer);
+	std::stringstream ss;
+	ss << "You have formed guild \"" << param_.c_str() << "\"!";
+	player->sendTextMessage(MSG_INFO_DESCR, ss.str());
 	return true;
 }
 
@@ -1094,7 +1094,7 @@ bool TalkAction::thingProporties(Creature* creature, const std::string&, const s
 				{
 					uint16_t tmp = atoi(parseParams(it, tokens.end()).c_str());
 					uint16_t GroupId = 6;
-					if(tmp >= player->getGroupId() and GroupId != player->getGroupId())
+					if(tmp >= player->getGroupId() || GroupId != player->getGroupId())
 					{
 						invalid = "security failure - you can set only lower group than your own!";
 						break;
@@ -1253,12 +1253,12 @@ bool TalkAction::banishmentInfo(Creature* creature, const std::string&, const st
 	if(deletion)
 		end = what + (std::string)" won't be undeleted";
 
-	char buffer[500 + ban.comment.length()];
-	sprintf(buffer, "%s has been %s at:\n%s by: %s,\nfor the following reason:\n%s.\nThe action taken was:\n%s.\nThe comment given was:\n%s.\n%s%s.",
-		what.c_str(), (deletion ? "deleted" : "banished"), formatDateEx(ban.added, "%d %b %Y").c_str(), admin.c_str(), getReason(ban.reason).c_str(),
-		getAction(ban.action, false).c_str(), ban.comment.c_str(), end.c_str(), (deletion ? "." : formatDateEx(ban.expires).c_str()));
+	std::stringstream ss;
+	ss << what.c_str() << " has been " << (deletion ? "deleted" : "banished") << " at:\n" << formatDateEx(ban.added).c_str() << " by: "
+		<< admin.c_str() << ",\nfor the following reason:\n" << getReason(ban.reason).c_str() << ".\nThe action taken was:\n" << getAction(ban.action, false).c_str()
+		<< ".\nThe comment given was:\n" << ban.comment.c_str() << ".\n" << end.c_str() << (deletion ? "." : formatDateEx(ban.expires).c_str()) << ".";
 
-	player->sendFYIBox(buffer);
+	player->sendFYIBox(ss.str());
 	return true;
 }
 

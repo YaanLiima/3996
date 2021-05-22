@@ -6517,13 +6517,13 @@ void Game::showHotkeyUseMessage(Player* player, Item* item)
 	const ItemType& it = Item::items[item->getID()];
 	uint32_t count = player->__getItemTypeCount(item->getID(), item->isFluidContainer() ? item->getFluidType() : -1);
 
-	char buffer[40 + it.name.size()];
+	std::stringstream ss;
 	if(count == 1)
-		sprintf(buffer, "Using the last %s...", it.name.c_str());
+		ss << "Using the last " << it.name.c_str() << "...";
 	else
-		sprintf(buffer, "Using one of %d %s...", count, it.pluralName.c_str());
+		ss << "Using one of " << count << " " << it.pluralName.c_str() << "...";
 
-	player->sendTextMessage(MSG_INFO_DESCR, buffer);
+	player->sendTextMessage(MSG_INFO_DESCR, ss.str());
 }
 
 void Game::parsePlayerExtendedOpcode(uint32_t playerId, uint8_t opcode, const std::string& buffer)

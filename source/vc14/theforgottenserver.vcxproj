@@ -88,7 +88,7 @@
       <Optimization>Disabled</Optimization>
       <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
-      <AdditionalIncludeDirectories>$(VcpkgRoot)include\luajit;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>      
+      <AdditionalIncludeDirectories>$(VcpkgRoot)include\luajit;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <TargetMachine>MachineX86</TargetMachine>
@@ -102,7 +102,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
-      <AdditionalIncludeDirectories>$(VcpkgRoot)include\luajit;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>      
+      <AdditionalIncludeDirectories>$(VcpkgRoot)include\luajit;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -119,7 +119,9 @@
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
       <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
-      <AdditionalIncludeDirectories>$(VcpkgRoot)include\luajit;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>      
+      <AdditionalIncludeDirectories>$(VcpkgRoot)include\luajit;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
     </ClCompile>
     <Link>
       <TargetMachine>MachineX86</TargetMachine>
@@ -134,13 +136,15 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;$(PREPROCESSOR_DEFS);%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <WarningLevel>Level4</WarningLevel>
-      <Optimization>MaxSpeed</Optimization>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
-      <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <Optimization>Full</Optimization>
+      <IntrinsicFunctions>false</IntrinsicFunctions>
+      <EnableFiberSafeOptimizations>false</EnableFiberSafeOptimizations>
       <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>
-      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
       <AdditionalIncludeDirectories>$(VcpkgRoot)include\luajit;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <ErrorReporting>Queue</ErrorReporting>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -152,6 +156,7 @@
   <ItemGroup>
     <ClCompile Include="..\actions.cpp" />
     <ClCompile Include="..\admin.cpp" />
+    <ClCompile Include="..\allocator.cpp" />
     <ClCompile Include="..\baseevents.cpp" />
     <ClCompile Include="..\beds.cpp" />
     <ClCompile Include="..\chat.cpp" />
@@ -166,8 +171,6 @@
     <ClCompile Include="..\database.cpp" />
     <ClCompile Include="..\databasemanager.cpp" />
     <ClCompile Include="..\databasemysql.cpp" />
-    <ClCompile Include="..\databaseodbc.cpp" />
-    <ClCompile Include="..\databasepgsql.cpp" />
     <ClCompile Include="..\databasesqlite.cpp" />
     <ClCompile Include="..\depot.cpp" />
     <ClCompile Include="..\dispatcher.cpp" />
@@ -184,8 +187,8 @@
     <ClCompile Include="..\iologindata.cpp" />
     <ClCompile Include="..\iomap.cpp" />
     <ClCompile Include="..\iomapserialize.cpp" />
-    <ClCompile Include="..\itemattributes.cpp" />
     <ClCompile Include="..\item.cpp" />
+    <ClCompile Include="..\itemattributes.cpp" />
     <ClCompile Include="..\items.cpp" />
     <ClCompile Include="..\luascript.cpp" />
     <ClCompile Include="..\mailbox.cpp" />
@@ -196,13 +199,6 @@
     <ClCompile Include="..\movement.cpp" />
     <ClCompile Include="..\networkmessage.cpp" />
     <ClCompile Include="..\npc.cpp" />
-    <ClCompile Include="..\otpch.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
-      <PrecompiledHeaderFile>otpch.h</PrecompiledHeaderFile>
-    </ClCompile>
     <ClCompile Include="..\otserv.cpp" />
     <ClCompile Include="..\outfit.cpp" />
     <ClCompile Include="..\outputmessage.cpp" />
@@ -232,12 +228,13 @@
     <ClCompile Include="..\trashholder.cpp" />
     <ClCompile Include="..\vocation.cpp" />
     <ClCompile Include="..\waitlist.cpp" />
-    <ClCompile Include="..\weapons.cpp    " />
+    <ClCompile Include="..\weapons.cpp" />
   </ItemGroup>
-  <ItemGroup>    
+  <ItemGroup>
     <ClInclude Include="..\account.h" />
     <ClInclude Include="..\actions.h" />
     <ClInclude Include="..\admin.h" />
+    <ClInclude Include="..\allocator.h" />
     <ClInclude Include="..\baseevents.h" />
     <ClInclude Include="..\beds.h" />
     <ClInclude Include="..\chat.h" />
@@ -247,14 +244,12 @@
     <ClInclude Include="..\connection.h" />
     <ClInclude Include="..\const.h" />
     <ClInclude Include="..\container.h" />
-    <ClInclude Include="..\creatureevent.h" />
     <ClInclude Include="..\creature.h" />
+    <ClInclude Include="..\creatureevent.h" />
     <ClInclude Include="..\cylinder.h" />
     <ClInclude Include="..\database.h" />
     <ClInclude Include="..\databasemanager.h" />
     <ClInclude Include="..\databasemysql.h" />
-    <ClInclude Include="..\databaseodbc.h" />
-    <ClInclude Include="..\databasepgsql.h" />
     <ClInclude Include="..\databasesqlite.h" />
     <ClInclude Include="..\definitions.h" />
     <ClInclude Include="..\depot.h" />
@@ -273,8 +268,8 @@
     <ClInclude Include="..\iologindata.h" />
     <ClInclude Include="..\iomap.h" />
     <ClInclude Include="..\iomapserialize.h" />
-    <ClInclude Include="..\itemattributes.h" />
     <ClInclude Include="..\item.h" />
+    <ClInclude Include="..\itemattributes.h" />
     <ClInclude Include="..\itemloader.h" />
     <ClInclude Include="..\items.h" />
     <ClInclude Include="..\luascript.h" />
@@ -286,13 +281,15 @@
     <ClInclude Include="..\movement.h" />
     <ClInclude Include="..\networkmessage.h" />
     <ClInclude Include="..\npc.h" />
+    <ClInclude Include="..\otpch.h" />
+    <ClInclude Include="..\otsystem.h" />
     <ClInclude Include="..\outfit.h" />
     <ClInclude Include="..\outputmessage.h" />
     <ClInclude Include="..\party.h" />
     <ClInclude Include="..\player.h" />
     <ClInclude Include="..\position.h" />
-    <ClInclude Include="..\protocolgame.h" />
     <ClInclude Include="..\protocol.h" />
+    <ClInclude Include="..\protocolgame.h" />
     <ClInclude Include="..\protocolhttp.h" />
     <ClInclude Include="..\protocollogin.h" />
     <ClInclude Include="..\protocolold.h" />
@@ -310,7 +307,6 @@
     <ClInclude Include="..\templates.h" />
     <ClInclude Include="..\textlogger.h" />
     <ClInclude Include="..\thing.h" />
-    <ClInclude Include="..\thread_holder_base.h" />    
     <ClInclude Include="..\tile.h" />
     <ClInclude Include="..\tools.h" />
     <ClInclude Include="..\town.h" />

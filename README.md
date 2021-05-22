@@ -21,13 +21,13 @@
 	
 
 6. ERROR Ubuntu 18.04?
-```configure: error: "boost::unordered_set header not found. Please update your boost to at least 1.40."````
+>>> configure: error: "boost::unordered_set header not found. Please update your boost to at least 1.40." <<<
 #Solution:
 Search the source for everything you have:
-* boost/tr1/unordered_set
+	* boost/tr1/unordered_set
 Replaces with:
-* boost/unordered_set
+	* boost/unordered_set
 And at house.h look for:
-* typedef std::tr1::unordered_set<uint32_t> PlayerList;
+	* typedef std::tr1::unordered_set<uint32_t> PlayerList;
 Replaces with:
-* typedef boost::unordered_set<uint32_t> PlayerList;
+	* typedef boost::unordered_set<uint32_t> PlayerList;

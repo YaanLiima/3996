@@ -21,7 +21,7 @@
 	
 
 6. ERROR Ubuntu 18.04?
-7. >>> configure: error: "boost::unordered_set header not found. Please update your boost to at least 1.40." <<<
+> configure: error: "boost::unordered_set header not found. Please update your boost to at least 1.40." <
 8. #Solution:
 9. Search the source for everything you have:
 	* boost/tr1/unordered_set

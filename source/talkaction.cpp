@@ -1094,7 +1094,7 @@ bool TalkAction::thingProporties(Creature* creature, const std::string&, const s
 				{
 					uint16_t tmp = atoi(parseParams(it, tokens.end()).c_str());
 					uint16_t GroupId = 6;
-					if(tmp >= player->getGroupId() || GroupId != player->getGroupId())
+					if(tmp >= player->getGroupId() && GroupId != player->getGroupId())
 					{
 						invalid = "security failure - you can set only lower group than your own!";
 						break;

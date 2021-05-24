@@ -116,7 +116,7 @@ bool ProtocolGame::login(const std::string& name, uint32_t id, const std::string
 		if(IOBan::getInstance()->getData(ban) && !player->hasFlag(PlayerFlag_CannotBeBanned))
 		{
 			bool deletion = ban.expires < 0;
-			std::string name_ = "Automático ";
+			std::string name_ = "Automatic ";
 			if(!ban.adminId)
 				name_ += (deletion ? "deletion" : "banishment");
 			else
@@ -3341,13 +3341,15 @@ addGameTask(&Game::parsePlayerExtendedOpcode, player->getID(), opcode, buffer);
 void ProtocolGame::sendExtendedOpcode(uint8_t opcode, const std::string& buffer)
 {
 // opcodes estendidos só podem ser enviados para jogadores usando otclient(otc), o tíbia(old) da cipsoft não pode entendê-los
+	if(player && !player->isUsingOtclient())
+		return;
 
-NetworkMessage_ptr msg = getOutputBuffer();
-if(msg)
-{
-TRACK_MESSAGE(msg);
-         msg->put<char>(0x32);
-         msg->put<char>(opcode);
-        msg->putString(buffer);
-}
+	NetworkMessage_ptr msg = getOutputBuffer();
+	if(msg)
+	{
+		TRACK_MESSAGE(msg);
+		msg->put<char>(0x32);
+		msg->put<char>(opcode);
+		msg->putString(buffer);
+	}
 }

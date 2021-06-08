@@ -23,10 +23,10 @@
 6. ERROR Ubuntu 18.04?
 > configure: error: "boost::unordered_set header not found. Please update your boost to at least 1.40."
 7. #Solution:
-Search the source for everything you have:
-	* boost/tr1/unordered_set
+Search on configure.ac and house.h:
+	* boost/tr1/unordered_set.hpp
 Replaces with:
-	* boost/unordered_set
+	* boost/unordered_set.hpp
 And at house.h look for:
 	* typedef std::tr1::unordered_set<uint32_t> PlayerList;
 Replaces with:

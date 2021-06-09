@@ -15,7 +15,7 @@
 5. Compile on linux:
 	* apt-get install subversion autoconf build-essential pkg-config automake libboost-all-dev libgmp3-dev libxml2-dev liblua5.1-0-dev libssl-dev libmysql++-dev libtool libcrypto++-dev libmysqlclient-dev libsqlite3-dev libluajit-5.1-dev
 	* cd /3996-master
-	* chmod -R 996 src
+	* chmod -R 777 src
 	* cd src
 	* ./autogen.sh && ./configure --enable-sqlite --enable-mysql --enable-root-permission --enable-server-diag && ./build.sh
 	

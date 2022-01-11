@@ -70,6 +70,12 @@ AC_ARG_ENABLE(luajit, [  --enable-luajit		enable luajit instead of lua],
 )
 AC_SUBST(OPTIONAL_FLAGS)
 
+# check if we want to use war system instead of lua
+war=no
+AC_ARG_ENABLE(war, [  --enable-war		enable war instead of lua],
+	[OPTIONAL_FLAGS="$OPTIONAL_FLAGS -D__WAR_SYSTEM__"]
+	war=yes
+)
 # check if we want a debug build
 debugBuild=no
 AC_ARG_ENABLE(debug, [  --enable-debug		enable debuging],
@@ -268,6 +274,7 @@ echo Home-directory configuration : $homedirConf
 echo OTServ custom allocator..... : $otservAllocator
 echo Debug build................. : $debugBuild
 echo Using LuaJIT................ : $luaJIT
+echo Using war system............ : $war
 echo
 echo Build with MySQL............ : $useMySQL
 echo Build with SQLite........... : $useSQLite

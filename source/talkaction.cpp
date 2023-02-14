@@ -224,7 +224,7 @@ bool TalkActions::onPlayerSay(Creature* creature, uint16_t channelId, const std:
 					for(AutoList<ProtocolGame>::iterator it = Player::cSpectators.begin(); it != Player::cSpectators.end(); ++it) {
 						if(it->second->getPlayer() == p) {
 							sl.clear();
-							sl << ss;
+							sl << ss.str();
 							if(first) 
 								first = false;
 							else
@@ -233,7 +233,7 @@ bool TalkActions::onPlayerSay(Creature* creature, uint16_t channelId, const std:
 							ss << it->second->getViewerName();
 							if(ss.str().length() > 250) {
 								ss.clear();
-								ss << sl << "...";
+								ss << sl.str() << "...";
 								break;
 							}
 						}

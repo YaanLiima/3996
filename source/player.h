@@ -231,8 +231,11 @@ class Player : public Creature, public Cylinder
 				if(it->second->getPlayer() == this) {
 					it->second->disconnect();
 					it->second->unRef();
-					removeCastViewer(it->first);
-					//it = cSpectators.begin();
+					cSpectators.erase(it); 
+					it = cSpectators.begin();
+					//removeCastViewer(it->first);
+				} else {
+                    ++it;
 				}
 			}
 			cast = PlayerCast();
@@ -244,6 +247,7 @@ class Player : public Creature, public Cylinder
 					it->second->disconnect();
 					it->second->unRef();
 					removeCastViewer(it->first);
+					return;
 				}
 		}
 

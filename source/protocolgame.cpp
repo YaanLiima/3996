@@ -317,6 +317,7 @@ bool ProtocolGame::logout(bool displayEffect, bool forceLogout)
 
 					connection->close();
 					player->removeCastViewer(it->first);
+					return false;
 				}
 		return false;
 	}

@@ -17,7 +17,7 @@
 	* cd /3996-master
 	* chmod -R 777 source
 	* cd source
-	* ./autogen.sh && ./configure --enable-sqlite --enable-mysql --enable-root-permission --enable-server-diag && ./build.sh
+	* ./autogen.sh && ./configure --enable-sqlite --enable-mysql --enable-root-permission --enable-war --enable-server-diag && ./build.sh
 	
 
 6. ERROR Ubuntu 18.04?
